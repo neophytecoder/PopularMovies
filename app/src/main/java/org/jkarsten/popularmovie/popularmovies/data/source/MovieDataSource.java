@@ -1,6 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.data.source;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 
 import java.util.List;
 
@@ -10,9 +11,18 @@ import java.util.List;
 
 public interface MovieDataSource {
     interface LoadMoviesCallback {
-        void onTaskLoaded(List<Movie> movies);
-        void onDataUnavailable();
+        void onLoadedMovies(List<Movie> movies);
+        void onDataNotAvailable();
     }
 
-    public List<Movie> getMovies();
+    interface LoadPopularResponseCallback {
+        void onLoadPopularResponse(PopularResponse popularResponse);
+        void onDataNotAvailable();
+    }
+
+    public void getMovies(LoadMoviesCallback callback);
+    public void getPopularResponse(int page, LoadPopularResponseCallback callback);
+    public int getTotalPages();
+    public int getTotalResults();
+
 }

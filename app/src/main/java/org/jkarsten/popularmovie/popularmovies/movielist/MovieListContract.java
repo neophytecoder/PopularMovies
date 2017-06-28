@@ -9,7 +9,7 @@ import org.jkarsten.popularmovie.popularmovies.BaseView;
 
 public interface MovieListContract {
     interface View extends BaseView<Presenter> {
-
+        public void showMoviePosters(String[] posterPaths);
     }
 
     interface Presenter extends BasePresenter {

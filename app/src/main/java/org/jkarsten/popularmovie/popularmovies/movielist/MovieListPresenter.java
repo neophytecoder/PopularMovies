@@ -2,8 +2,10 @@ package org.jkarsten.popularmovie.popularmovies.movielist;
 
 import android.util.Log;
 
-import org.jkarsten.popularmovie.popularmovies.data.source.MovieLoader;
-import org.jkarsten.popularmovie.popularmovies.data.source.remote.RemoteMovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -11,25 +13,35 @@ import javax.inject.Inject;
  * Created by juankarsten on 6/23/17.
  */
 
-public class MovieListPresenter implements MovieListContract.Presenter {
+public class MovieListPresenter implements MovieListContract.Presenter, MovieDataSource.LoadMoviesCallback {
     MovieListContract.View mView;
-    MovieLoader mMovieLoader;
+    MovieDataSource mRepository;
 
     @Inject
-    public MovieListPresenter(MovieListContract.View movieListView, MovieLoader movieLoader) {
+    public MovieListPresenter(MovieListContract.View movieListView, MovieDataSource repository) {
         mView = movieListView;
         Log.d(MovieListPresenter.class.getSimpleName(), "created");
 
-        mMovieLoader = movieLoader;
+        mRepository = repository;
     }
 
     @Override
     public void start() {
-        mMovieLoader.start();
+        mRepository.getMovies(this);
     }
 
     @Override
     public void loadList() {
 
+    }
+
+    @Override
+    public void onLoadedMovies(List<Movie> movies) {
+        // TODO: 6/29/17 show movies 
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+        // TODO: 6/29/17 do something e.g: device offline
     }
 }

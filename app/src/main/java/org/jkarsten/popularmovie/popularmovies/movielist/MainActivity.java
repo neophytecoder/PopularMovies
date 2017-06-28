@@ -17,12 +17,20 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        createRecyclerView();
+
         DaggerMovieListComponent.builder()
                 .movieListModule(new MovieListModule(this))
                 .movieDataModule(new MovieDataModule(this, getSupportLoaderManager()))
                 .build().inject(this);
 
         mPresenter.start();
+
+
+    }
+
+    private void createRecyclerView() {
+
     }
 
     @Override
@@ -30,5 +38,8 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
 
     }
 
+    @Override
+    public void showMoviePosters(String[] posterPaths) {
 
+    }
 }

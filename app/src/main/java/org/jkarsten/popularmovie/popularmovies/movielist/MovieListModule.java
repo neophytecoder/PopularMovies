@@ -1,9 +1,9 @@
 package org.jkarsten.popularmovie.popularmovies.movielist;
 
-import android.support.v4.app.LoaderManager;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 
-import org.jkarsten.popularmovie.popularmovies.data.source.MovieListRepository;
-import org.jkarsten.popularmovie.popularmovies.data.source.MovieLoader;
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,7 +26,7 @@ public class MovieListModule {
     }
 
     @Provides
-    MovieListContract.Presenter providePresenter(MovieLoader loader) {
-        return new MovieListPresenter(movieListView, loader);
+    MovieListContract.Presenter providePresenter(@Named(MovieDataModule.REPO) MovieDataSource repo) {
+        return new MovieListPresenter(movieListView, repo);
     }
 }
