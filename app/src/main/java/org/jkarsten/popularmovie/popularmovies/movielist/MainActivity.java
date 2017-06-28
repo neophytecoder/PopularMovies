@@ -1,9 +1,11 @@
 package org.jkarsten.popularmovie.popularmovies.movielist;
 
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import org.jkarsten.popularmovie.popularmovies.R;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 
 import javax.inject.Inject;
 
@@ -17,11 +19,16 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
 
         DaggerMovieListComponent.builder()
                 .movieListModule(new MovieListModule(this))
+                .movieDataModule(new MovieDataModule(this, getSupportLoaderManager()))
                 .build().inject(this);
+
+        mPresenter.start();
     }
 
     @Override
     public void setPresenter(MovieListContract.Presenter presenter) {
 
     }
+
+
 }

@@ -12,5 +12,7 @@ public class PopularMovieApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
     }
 }
