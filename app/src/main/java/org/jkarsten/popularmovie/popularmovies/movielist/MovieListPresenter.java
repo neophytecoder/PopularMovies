@@ -37,7 +37,7 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
 
     @Override
     public void onLoadedMovies(List<Movie> movies) {
-        // TODO: 6/29/17 show movies 
+        mView.showMovies(movies);
     }
 
     @Override

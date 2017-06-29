@@ -2,6 +2,9 @@ package org.jkarsten.popularmovie.popularmovies.movielist;
 
 import org.jkarsten.popularmovie.popularmovies.BasePresenter;
 import org.jkarsten.popularmovie.popularmovies.BaseView;
+import org.jkarsten.popularmovie.popularmovies.data.Movie;
+
+import java.util.List;
 
 /**
  * Created by juankarsten on 6/23/17.
@@ -9,7 +12,7 @@ import org.jkarsten.popularmovie.popularmovies.BaseView;
 
 public interface MovieListContract {
     interface View extends BaseView<Presenter> {
-        public void showMoviePosters(String[] posterPaths);
+        public void showMovies(List<Movie> movies);
     }
 
     interface Presenter extends BasePresenter {
