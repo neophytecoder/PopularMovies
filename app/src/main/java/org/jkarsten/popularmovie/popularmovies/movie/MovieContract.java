@@ -1,22 +1,19 @@
-package org.jkarsten.popularmovie.popularmovies.movielist;
+package org.jkarsten.popularmovie.popularmovies.movie;
 
 import org.jkarsten.popularmovie.popularmovies.BasePresenter;
 import org.jkarsten.popularmovie.popularmovies.BaseView;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 
-import java.util.List;
-
 /**
- * Created by juankarsten on 6/23/17.
+ * Created by juankarsten on 6/29/17.
  */
 
-public interface MovieListContract {
+public class MovieContract {
     interface View extends BaseView<Presenter> {
-        public void showMovies(List<Movie> movies);
-        public void goToMovieActivity(Movie movie);
+
     }
 
     interface Presenter extends BasePresenter {
-        void viewMovie(Movie movie);
+        void setMovie(Movie movie);
     }
 }

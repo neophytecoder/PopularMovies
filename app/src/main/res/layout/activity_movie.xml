@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.jkarsten.popularmovie.popularmovies.movie.MovieActivity">
+
+
+    <ImageView
+        android:id="@+id/moviePosterImageVIew"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movieTitleTextView"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/movieTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        tools:text="Chappie"
+        android:textAppearance="@android:style/TextAppearance.Material.Display3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/yearTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        tools:text="2015"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintLeft_toRightOf="@+id/moviePosterImageVIew"
+        app:layout_constraintTop_toTopOf="@+id/moviePosterImageVIew" />
+
+    <TextView
+        android:id="@+id/ratingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="8.1/10"
+        android:textAppearance="@android:style/TextAppearance.Material.Small"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/yearTextView"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/yearTextView" />
+
+    <TextView
+        android:id="@+id/overviewTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="8dp"
+        android:text="TextView"
+        app:layout_constraintLeft_toLeftOf="@+id/moviePosterImageVIew"
+        app:layout_constraintTop_toBottomOf="@+id/moviePosterImageVIew"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.0" />
+</android.support.constraint.ConstraintLayout>

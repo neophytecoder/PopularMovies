@@ -30,9 +30,10 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
         mRepository.getMovies(this);
     }
 
-    @Override
-    public void loadList() {
 
+    @Override
+    public void viewMovie(Movie movie) {
+        mView.goToMovieActivity(movie);
     }
 
     @Override

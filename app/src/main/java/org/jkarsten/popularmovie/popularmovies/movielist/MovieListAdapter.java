@@ -7,12 +7,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.util.List;
 
@@ -24,11 +26,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     private List<Movie> mMovieList;
     private Context mContext;
 
-    public static final String IMAGE_URL = "https://image.tmdb.org/t/p";
-    public String size = "w500";
 
-    public MovieListAdapter(Context context) {
+    private OnListItemClickListener mListener;
+
+    public MovieListAdapter(Context context, OnListItemClickListener listener) {
         mContext = context;
+        mListener = listener;
     }
 
     public void setMovies(List<Movie> movieList) {
@@ -59,31 +62,32 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         return mMovieList.size();
     }
 
-    public String buildImageUri(String size, String imagePath) {
-        String url = Uri.parse(IMAGE_URL)
-                .buildUpon()
-                .appendPath(size)
-                .appendPath(imagePath.substring(1))
-                .build().toString();
-
-        Log.d(MovieListAdapter.class.getSimpleName(), url);
-        return url;
-    }
-
-    class MovieListViewHolder extends RecyclerView.ViewHolder {
+    class MovieListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView mPosterImageView;
 
         public MovieListViewHolder(View itemView) {
             super(itemView);
 
             mPosterImageView = (ImageView) itemView.findViewById(R.id.poster_image);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(Movie movie) {
-            String path = buildImageUri(size, movie.getPosterPath());
+            String path = ImageUtil.buildImageUri(ImageUtil.size, movie.getPosterPath());
             Picasso.with(mContext)
                     .load(path)
                     .into(mPosterImageView);
         }
+
+        @Override
+        public void onClick(View v) {
+            int itemId = getAdapterPosition();
+            Movie movie = mMovieList.get(itemId);
+            mListener.onClick(movie);
+        }
+    }
+
+    interface OnListItemClickListener {
+        void onClick(Movie movie);
     }
 }

@@ -2,6 +2,7 @@ package org.jkarsten.popularmovie.popularmovies.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by juankarsten on 6/24/17.
  */
 
-public class Movie {
+public class Movie implements Serializable {
     ////"vote_count":1945,"id":297762,"video":false,"vote_average":7,"title":"Wonder Woman","popularity":113.999005,"poster_path":"\/gfJGlDaHuWimErCr5Ql0I8x9QSy.jpg","original_language":"en","original_title":"Wonder Woman","genre_ids":[28,12,14,878],"backdrop_path":"\/hA5oCgvgCxj5MEWcLpjXXTwEANF.jpg","adult":false,"overview":"An Amazon princess comes to the world of Man to become the greatest of the female superheroes.","release_date":"2017-05-30"
 
     @SerializedName("vote_count")
