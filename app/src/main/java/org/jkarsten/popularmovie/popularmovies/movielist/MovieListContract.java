@@ -18,5 +18,7 @@ public interface MovieListContract {
 
     interface Presenter extends BasePresenter {
         void viewMovie(Movie movie);
+        void onPopularSelected();
+        void onTopRatedSelected();
     }
 }

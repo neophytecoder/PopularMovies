@@ -19,13 +19,24 @@ public class MovieListRepository implements MovieDataSource, MovieDataSource.Loa
     }
 
     @Override
-    public void getMovies(LoadMoviesCallback callback) {
+    public void getPopularMovies(LoadMoviesCallback callback) {
         mCallback = callback;
         mRemoteDataSource.getPopularResponse(currentPage, this);
     }
 
     @Override
+    public void getTopRatedMovies(LoadMoviesCallback callback) {
+        mCallback = callback;
+        mRemoteDataSource.getTopRatedResponse(currentPage, this);
+    }
+
+    @Override
     public void getPopularResponse(int page, LoadPopularResponseCallback callback) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void getTopRatedResponse(int page, LoadPopularResponseCallback callback) {
         throw new UnsupportedOperationException();
     }
 

@@ -11,13 +11,12 @@ import android.util.Log;
 import com.google.gson.Gson;
 
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
+import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.inject.Inject;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -31,19 +30,21 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
     public static final String BASE_URL = "https://api.themoviedb.org/3";
     public static final String MOVIE_PATH = "movie";
     public static final String POPULAR_PATH = "popular";
+    public static final String TOP_RATED_PATH = "top_rated";
 
 
     public static final String PARAM_API_KEY = "api_key";
     public static final String PARAM_LANGUAGE = "language";
     public static final String PARAM_PAGE = "page";
 
-    public static final int LOADER_ID = 345;
+    public static final int LOADER_ID_POPULAR = 345;
+    public static final int LOADER_ID_TOP_RATED = 346;
 
     private OkHttpClient mClient;
 
     private int totalResult;
     private int totalPage;
-    private PopularResponse mPopularResponse;
+    private TopRatedResponse mTopRatedResponse;
 
     private LoaderManager mLoaderManager;
     private Loader<PopularResponse> mLoader;
@@ -59,8 +60,13 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
 
 
     @Override
-    public void getMovies(LoadMoviesCallback callback) {
+    public void getPopularMovies(LoadMoviesCallback callback) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void getTopRatedMovies(LoadMoviesCallback callback) {
+
     }
 
     @Override
@@ -70,12 +76,22 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
         mCallback = callback;
 
         if (mLoader == null) {
-            mLoader = mLoaderManager.initLoader(LOADER_ID, bundle, this);
+            mLoader = mLoaderManager.initLoader(LOADER_ID_POPULAR, bundle, this);
         } else {
-            mLoader = mLoaderManager.restartLoader(LOADER_ID, bundle, this);
+            mLoader = mLoaderManager.restartLoader(LOADER_ID_POPULAR, bundle, this);
         }
         mLoader.forceLoad();
     }
+
+    @Override
+    public void getTopRatedResponse(int page, LoadPopularResponseCallback callback) {
+        throw new UnsupportedOperationException();
+    }
+
+    private TopRatedResponse getTopRateResponse(int page) {
+        throw new UnsupportedOperationException();
+    }
+
 
     private PopularResponse getPopularResponseHelper(int page) {
         Uri uri = Uri.parse(BASE_URL).buildUpon()
@@ -87,9 +103,10 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
                 .build();
 
         URL url = null;
+        PopularResponse popularResponse = null;
         try {
             url = new URL(uri.toString());
-
+            Log.d(RemoteMovieDataSource.class.getSimpleName(), uri.toString());
             Request request = new Request.Builder()
                     .url(url)
                     .build();
@@ -98,12 +115,11 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
 
             if (response.isSuccessful() ) {
                 String body = response.body().string();
-                PopularResponse popularResponse = parsePopularResponse(body);
-
+                popularResponse = parsePopularResponse(body);
+                Log.d(RemoteMovieDataSource.class.getSimpleName(), popularResponse.toString());
                 totalPage = popularResponse.getPage();
                 totalResult = popularResponse.getTotalResults();
 
-                return popularResponse;
             } else {
                 String body = response.body().toString();
                 Log.d(RemoteMovieDataSource.class.getSimpleName(), body);
@@ -115,12 +131,16 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
             Log.d(RemoteMovieDataSource.class.getSimpleName(), exc.toString());
         }
 
-        return null;
+        return popularResponse;
     }
 
     private PopularResponse parsePopularResponse(String reponse) {
         Gson gson = new Gson();
         return gson.fromJson(reponse, PopularResponse.class);
+    }
+
+    private TopRatedResponse parseTopRatedResponse(String reponse) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -136,18 +156,20 @@ public class RemoteMovieDataSource implements MovieDataSource, LoaderManager.Loa
     @Override
     public Loader<PopularResponse> onCreateLoader(int id, Bundle args) {
         final int page = args.getInt(PARAM_PAGE);
-        return new AsyncTaskLoader<PopularResponse>(mContext) {
-            @Override
-            public PopularResponse loadInBackground() {
-                PopularResponse popularResponse = mPopularResponse;
-                if (mPopularResponse != null) {
-                    deliverResult(mPopularResponse);
-                } else {
-                    popularResponse = getPopularResponseHelper(page);
+        if (id == LOADER_ID_POPULAR)
+            return new AsyncTaskLoader<PopularResponse>(mContext) {
+                private PopularResponse mPopularResponse;
+
+                @Override
+                public PopularResponse loadInBackground() {
+                    if (mPopularResponse == null) {
+                        mPopularResponse = getPopularResponseHelper(page);
+                    }
+                    return mPopularResponse;
                 }
-                return popularResponse;
-            }
-        };
+            };
+        else
+            throw new UnsupportedOperationException();
     }
 
     @Override

@@ -51,7 +51,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private void fillViews() {
         mMovieTitleTextView.setText(mMovie.getOriginalTitle());
-        String path = ImageUtil.buildImageUri(ImageUtil.size, mMovie.getPosterPath());
+        String path = ImageUtil.buildImageUri(mMovie.getPosterPath(), this);
         Picasso.with(this).load(path).into(mMoviePosterImageView);
         int year = Integer.parseInt(new SimpleDateFormat("yyyy").format(mMovie.getReleaseDate()));
         mYearTextView.setText(year+"");
