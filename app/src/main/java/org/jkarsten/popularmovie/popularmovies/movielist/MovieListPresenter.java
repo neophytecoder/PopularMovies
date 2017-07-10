@@ -5,6 +5,7 @@ import android.util.Log;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.data.source.remote.RemoteMovieDataSource;
 
 import java.util.List;
 
@@ -15,23 +16,36 @@ import javax.inject.Inject;
  */
 
 public class MovieListPresenter implements MovieListContract.Presenter, MovieDataSource.LoadMoviesCallback {
-    MovieListContract.View mView;
-    MovieDataSource mRepository;
+    private MovieListContract.View mView;
+    private MovieDataSource mRepository;
+    private int currentSort;
+
+    public static final int SORT_BY_POPULAR = 1;
+    public static final int SORT_BY_TOP_RATED = 2;
 
     @Inject
     public MovieListPresenter(MovieListContract.View movieListView, MovieDataSource repository) {
+        currentSort = SORT_BY_POPULAR;
         mView = movieListView;
         Log.d(MovieListPresenter.class.getSimpleName(), "created");
-
         mRepository = repository;
     }
 
     @Override
     public void start() {
-        mRepository.getPopularMovies(this);
+        mView.showLoading();
+        currentSort = mView.readSortingState();
+        if (currentSort == MovieListPresenter.SORT_BY_POPULAR)
+            mRepository.getPopularMovies(this);
+        else
+            mRepository.getTopRatedMovies(this);
         Log.d(MovieListPresenter.class.getSimpleName(), "started");
     }
 
+    @Override
+    public void stop() {
+        mView.writeSortingState(currentSort);
+    }
 
     @Override
     public void viewMovie(Movie movie) {
@@ -42,21 +56,27 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
 
     @Override
     public void onLoadedMovies(List<Movie> movies) {
+        mView.hideLoading();
         mView.showMovies(movies);
     }
 
     @Override
     public void onDataNotAvailable() {
-        // TODO: 6/29/17 do something e.g: device offline
+        mView.hideLoading();
+        mView.showNoInternet();
     }
 
     @Override
     public void onPopularSelected() {
+        currentSort = SORT_BY_POPULAR;
+        mView.showLoading();
         mRepository.getPopularMovies(this);
     }
 
     @Override
     public void onTopRatedSelected() {
-        // TODO: 7/4/17
+        currentSort = SORT_BY_TOP_RATED;
+        mView.showLoading();
+        mRepository.getTopRatedMovies(this);
     }
 }

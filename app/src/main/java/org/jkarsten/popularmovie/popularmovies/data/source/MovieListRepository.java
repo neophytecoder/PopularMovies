@@ -1,16 +1,17 @@
 package org.jkarsten.popularmovie.popularmovies.data.source;
 
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
+import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 
 /**
  * Created by juankarsten on 6/24/17.
  */
 
-public class MovieListRepository implements MovieDataSource, MovieDataSource.LoadPopularResponseCallback {
+public class MovieListRepository implements MovieDataSource,
+        MovieDataSource.LoadPopularResponseCallback, MovieDataSource.LoadTopRatedResponseCallback {
     private MovieDataSource mRemoteDataSource;
     private int currentPage = 1;
-    private LoadMoviesCallback mCallback;
-
+    private LoadMoviesCallback mLoadMoviesCallback;
 
     public MovieListRepository(MovieDataSource remoteDataSource) {
         mRemoteDataSource = remoteDataSource;
@@ -20,13 +21,13 @@ public class MovieListRepository implements MovieDataSource, MovieDataSource.Loa
 
     @Override
     public void getPopularMovies(LoadMoviesCallback callback) {
-        mCallback = callback;
+        mLoadMoviesCallback = callback;
         mRemoteDataSource.getPopularResponse(currentPage, this);
     }
 
     @Override
     public void getTopRatedMovies(LoadMoviesCallback callback) {
-        mCallback = callback;
+        mLoadMoviesCallback = callback;
         mRemoteDataSource.getTopRatedResponse(currentPage, this);
     }
 
@@ -35,8 +36,9 @@ public class MovieListRepository implements MovieDataSource, MovieDataSource.Loa
         throw new UnsupportedOperationException();
     }
 
+
     @Override
-    public void getTopRatedResponse(int page, LoadPopularResponseCallback callback) {
+    public void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback) {
         throw new UnsupportedOperationException();
     }
 
@@ -52,11 +54,17 @@ public class MovieListRepository implements MovieDataSource, MovieDataSource.Loa
 
     @Override
     public void onLoadPopularResponse(PopularResponse popularResponse) {
-        mCallback.onLoadedMovies(popularResponse.getResults());
+        mLoadMoviesCallback.onLoadedMovies(popularResponse.getResults());
+    }
+
+
+    @Override
+    public void onLoadTopRatedResponse(TopRatedResponse topRatedResponse) {
+        mLoadMoviesCallback.onLoadedMovies(topRatedResponse.getResults());
     }
 
     @Override
     public void onDataNotAvailable() {
-        mCallback.onDataNotAvailable();
+        mLoadMoviesCallback.onDataNotAvailable();
     }
 }

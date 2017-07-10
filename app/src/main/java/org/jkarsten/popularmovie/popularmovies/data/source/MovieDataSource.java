@@ -22,15 +22,15 @@ public interface MovieDataSource {
     }
 
     interface LoadTopRatedResponseCallback {
-        void onLoadPopularResponse(TopRatedResponse popularResponse);
+        void onLoadTopRatedResponse(TopRatedResponse popularResponse);
         void onDataNotAvailable();
     }
 
-    public void getPopularMovies(LoadMoviesCallback callback);
-    public void getTopRatedMovies(LoadMoviesCallback callback);
-    public void getPopularResponse(int page, LoadPopularResponseCallback callback);
-    public void getTopRatedResponse(int page, LoadPopularResponseCallback callback);
-    public int getTotalPages();
-    public int getTotalResults();
+     void getPopularMovies(LoadMoviesCallback callback);
+     void getTopRatedMovies(LoadMoviesCallback callback);
+     void getPopularResponse(int page, LoadPopularResponseCallback callback);
+     void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback);
+     int getTotalPages();
+     int getTotalResults();
 
 }

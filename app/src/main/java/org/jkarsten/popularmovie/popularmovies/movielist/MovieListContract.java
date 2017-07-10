@@ -12,13 +12,21 @@ import java.util.List;
 
 public interface MovieListContract {
     interface View extends BaseView<Presenter> {
-        public void showMovies(List<Movie> movies);
-        public void goToMovieActivity(Movie movie);
+        void showMovies(List<Movie> movies);
+        void goToMovieActivity(Movie movie);
+        int readSortingState();
+        void writeSortingState(int state);
+        void showNoInternet();
+
+        void showLoading();
+        void hideLoading();
     }
 
     interface Presenter extends BasePresenter {
         void viewMovie(Movie movie);
         void onPopularSelected();
         void onTopRatedSelected();
+        
+
     }
 }

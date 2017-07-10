@@ -10,5 +10,5 @@ import dagger.Component;
 
 @Component(modules = {MovieListModule.class, MovieDataModule.class})
 public interface MovieListComponent {
-    public void inject(MainActivity mainActivity);
+     void inject(MainActivity mainActivity);
 }

@@ -2,4 +2,11 @@
     <string name="app_name">PopularMovies</string>
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
+    <string name="no_connection">Please, connect to the internet</string>
+    <string name="lorem_ipsum">lorem ipsum dolem slamet sabdsa lorem ipsum dolem slamet lorem ipsum lorem ipsum</string>
+    <string name="mock_title">Chappie</string>
+    <string name="mock_year">2015</string>
+    <string name="mock_rating">8.2/10</string>
+    <string name="show_loading">movies are being loaded</string>
+    <string name="movie_poster_desc">Movie poster</string>
 </resources>

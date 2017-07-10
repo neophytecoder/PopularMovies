@@ -1,6 +1,8 @@
 package org.jkarsten.popularmovie.popularmovies.movielist;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,11 +10,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.movie.MovieActivity;
+import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.util.List;
 
@@ -24,12 +30,20 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
     RecyclerView mRecyclerView;
     MovieListAdapter mMovieListAdapter;
 
+    TextView noInternetTextView;
+    LinearLayout loadingLayout;
+
     public static final String MOVIE = "movie";
+
+    public static final String PREFERENCE_SORT_STATE = "sort state";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        noInternetTextView = (TextView) findViewById(R.id.no_internet);
+        loadingLayout = (LinearLayout) findViewById(R.id.loading);
 
         createRecyclerView();
 
@@ -38,15 +52,20 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
                 .movieDataModule(new MovieDataModule(this, getSupportLoaderManager()))
                 .build().inject(this);
 
-        mPresenter.start();
+
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.start();
+    }
 
     private void createRecyclerView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.movies_recyclerview);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
+        int columns = ImageUtil.getColumns(this);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, columns);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -81,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
 
     @Override
     public void showMovies(List<Movie> movies) {
+        noInternetTextView.setVisibility(View.GONE);
         mMovieListAdapter.setMovies(movies);
     }
 
@@ -94,5 +114,40 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
         Intent intent = new Intent(this, MovieActivity.class);
         intent.putExtra(MOVIE, movie);
         startActivity(intent);
+    }
+
+    @Override
+    public int readSortingState() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return sharedPreferences.getInt(PREFERENCE_SORT_STATE, MovieListPresenter.SORT_BY_POPULAR);
+    }
+
+    @Override
+    public void writeSortingState(int state) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(PREFERENCE_SORT_STATE, state);
+        editor.apply();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.stop();
+        super.onStop();
+    }
+
+    @Override
+    public void showNoInternet() {
+        noInternetTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showLoading() {
+        loadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingLayout.setVisibility(View.GONE);
     }
 }

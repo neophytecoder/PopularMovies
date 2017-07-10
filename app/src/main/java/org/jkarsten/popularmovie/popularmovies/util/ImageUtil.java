@@ -3,6 +3,7 @@ package org.jkarsten.popularmovie.popularmovies.util;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.content.res.Configuration;
 
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListAdapter;
 
@@ -36,7 +37,7 @@ public class ImageUtil {
         return url;
     }
 
-    public static final String buildImageUri(String imagePath, Context context) {
+    public static String buildImageUri(String imagePath, Context context) {
         int density = getDensity(context);
 
         if (density < HDPI)
@@ -51,9 +52,20 @@ public class ImageUtil {
             return buildImageUri(XXXHDPI_SIZE, imagePath);
     }
 
-    public static final int getDensity(Context context) {
-        int density = (int)(context.getResources().getDisplayMetrics().density * 10) ;
-        return density;
+    public static int getColumns(Context context) {
+        int orientation = context.getResources().getConfiguration().orientation;
+        switch (orientation) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                return 5;
+            case Configuration.ORIENTATION_PORTRAIT:
+                return 3;
+            default:
+                return 3;
+        }
+    }
+
+    public static int getDensity(Context context) {
+        return (int)(context.getResources().getDisplayMetrics().density * 10) ;
     }
 
 }

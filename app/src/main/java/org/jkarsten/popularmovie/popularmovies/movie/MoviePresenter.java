@@ -16,4 +16,9 @@ public class MoviePresenter implements MovieContract.Presenter {
     public void setMovie(Movie movie) {
 
     }
+
+    @Override
+    public void stop() {
+
+    }
 }
