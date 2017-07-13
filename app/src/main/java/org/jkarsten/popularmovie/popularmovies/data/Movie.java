@@ -3,6 +3,7 @@ package org.jkarsten.popularmovie.popularmovies.data;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class Movie implements Serializable {
 
     @SerializedName("backdrop_path")
     private String backdropPath;
+
+    private String year;
+    private String topAverage;
 
     public int getVoteCount() {
         return voteCount;
@@ -149,6 +153,14 @@ public class Movie implements Serializable {
 
     public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public String getYear() {
+        return new SimpleDateFormat("yyyy").format(getReleaseDate()).toString();
+    }
+
+    public String getTopAverage() {
+        return voteAverage+"/10.0";
     }
 
     @Override

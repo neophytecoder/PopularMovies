@@ -1,6 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.movie;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.databinding.ActivityMovieBinding;
 import org.jkarsten.popularmovie.popularmovies.movielist.MainActivity;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
@@ -20,11 +22,7 @@ import java.text.SimpleDateFormat;
 public class MovieActivity extends AppCompatActivity implements MovieContract.View {
     Movie mMovie;
 
-    TextView mMovieTitleTextView;
     ImageView mMoviePosterImageView;
-    TextView mYearTextView;
-    TextView mRatingTextView;
-    TextView mSynopsisTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +35,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     private void getAllViews() {
-        mMovieTitleTextView = (TextView) findViewById(R.id.movieTitleTextView);
         mMoviePosterImageView = (ImageView) findViewById(R.id.moviePosterImageVIew);
-        mYearTextView = (TextView) findViewById(R.id.yearTextView);
-        mRatingTextView = (TextView) findViewById(R.id.ratingTextView);
-        mSynopsisTextView = (TextView) findViewById(R.id.overviewTextView);
     }
 
     private void setMovieFromIntent() {
@@ -50,13 +44,11 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     private void fillViews() {
-        mMovieTitleTextView.setText(mMovie.getOriginalTitle());
         String path = ImageUtil.buildImageUri(mMovie.getPosterPath(), this);
         Picasso.with(this).load(path).into(mMoviePosterImageView);
-        int year = Integer.parseInt(new SimpleDateFormat("yyyy").format(mMovie.getReleaseDate()));
-        mYearTextView.setText(year+"");
-        mRatingTextView.setText(mMovie.getVoteAverage()+"/10");
-        mSynopsisTextView.setText(mMovie.getOverview());
+
+        ActivityMovieBinding movieBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
+        movieBinding.setMovie(mMovie);
     }
 
 
