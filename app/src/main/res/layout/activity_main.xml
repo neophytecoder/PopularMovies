@@ -29,9 +29,14 @@ tools:context="org.jkarsten.popularmovie.popularmovies.movielist.MainActivity">
             android:layout_height="wrap_content"
             android:text="@string/show_loading"/>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/movies_recyclerview"
-        ></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content"
+        android:id="@+id/swipe_refresh_movie_list">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/movies_recyclerview"
+            ></android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

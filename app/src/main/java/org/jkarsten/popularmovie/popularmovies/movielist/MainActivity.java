@@ -17,6 +17,7 @@ import android.widget.TextView;
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
+import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieSyncUtils;
 import org.jkarsten.popularmovie.popularmovies.movie.MovieActivity;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
         noInternetTextView = (TextView) findViewById(R.id.no_internet);
         loadingLayout = (LinearLayout) findViewById(R.id.loading);
 
+
         createRecyclerView();
 
         DaggerMovieListComponent.builder()
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
                 .build().inject(this);
 
 
+        PopularMovieSyncUtils.initialize(this);
     }
 
     @Override

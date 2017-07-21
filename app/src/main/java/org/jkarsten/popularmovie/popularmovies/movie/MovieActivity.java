@@ -34,6 +34,11 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         fillViews();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     private void getAllViews() {
         mMoviePosterImageView = (ImageView) findViewById(R.id.moviePosterImageVIew);
     }

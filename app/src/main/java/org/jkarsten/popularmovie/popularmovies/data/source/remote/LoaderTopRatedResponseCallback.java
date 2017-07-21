@@ -1,23 +1,16 @@
 package org.jkarsten.popularmovie.popularmovies.data.source.remote;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
-
-import com.google.gson.Gson;
 
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
-import org.jkarsten.popularmovie.popularmovies.util.NetworkUtil;
-
-import java.io.IOException;
+import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieNetworkUtil;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
 
 /**
  * Created by juankarsten on 7/6/17.
@@ -47,7 +40,7 @@ public class LoaderTopRatedResponseCallback implements LoaderManager.LoaderCallb
                 @Override
                 public TopRatedResponse loadInBackground() {
                     if (mTopRatedResponse == null) {
-                        mTopRatedResponse = getTopRateResponseHelper(page);
+                        mTopRatedResponse = PopularMovieNetworkUtil.getTopRateResponseHelper(page, mClient);
                     }
                     return mTopRatedResponse;
                 }
@@ -69,30 +62,6 @@ public class LoaderTopRatedResponseCallback implements LoaderManager.LoaderCallb
 
     }
 
-    private TopRatedResponse getTopRateResponseHelper(int page) {
-        Uri uri = NetworkUtil.buildPageUri(RemoteMovieDataSource.TOP_RATED_PATH, page);
 
-        TopRatedResponse topRatedResponse = null;
-        try {
-            Response response = NetworkUtil.makeRequest(mClient, uri);
-            String body = response.body().string();
-            if (response.isSuccessful()) {
-                topRatedResponse = parseTopRatedResponse(body);
-                Log.d(RemoteMovieDataSource.class.getSimpleName(), topRatedResponse.toString());
-            } else {
-                Log.d(RemoteMovieDataSource.class.getSimpleName(), body);
-            }
-
-        } catch (IOException exc) {
-            Log.d(RemoteMovieDataSource.class.getSimpleName(), exc.toString());
-        }
-
-        return topRatedResponse;
-    }
-
-    private TopRatedResponse parseTopRatedResponse(String reponse) {
-        Gson gson = new Gson();
-        return gson.fromJson(reponse, TopRatedResponse.class);
-    }
 
 }

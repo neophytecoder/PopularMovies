@@ -1,25 +1,16 @@
 package org.jkarsten.popularmovie.popularmovies.data.source.remote;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
-
-import com.google.gson.Gson;
 
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
-import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
-import org.jkarsten.popularmovie.popularmovies.util.NetworkUtil;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
+import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieNetworkUtil;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Response;
 
 /**
  * Created by juankarsten on 7/6/17.
@@ -49,7 +40,7 @@ public class LoaderPopularResponseCallback implements LoaderManager.LoaderCallba
                 @Override
                 public PopularResponse loadInBackground() {
                     if (mPopularResponse == null) {
-                        mPopularResponse = getPopularResponseHelper(page);
+                        mPopularResponse = PopularMovieNetworkUtil.getPopularResponseHelper(page, mClient);
                     }
                     return mPopularResponse;
                 }
@@ -71,32 +62,4 @@ public class LoaderPopularResponseCallback implements LoaderManager.LoaderCallba
 
     }
 
-    private PopularResponse getPopularResponseHelper(int page) {
-        Uri uri = NetworkUtil.buildPageUri(RemoteMovieDataSource.POPULAR_PATH, page);
-
-        PopularResponse popularResponse = null;
-        try {
-            Response response = NetworkUtil.makeRequest(mClient, uri);
-            String body = response.body().string();
-
-            if (response.isSuccessful() ) {
-                popularResponse = parsePopularResponse(body);
-                Log.d(RemoteMovieDataSource.class.getSimpleName(), popularResponse.toString());
-            } else {
-                Log.d(RemoteMovieDataSource.class.getSimpleName(), body);
-            }
-
-        } catch (MalformedURLException exc) {
-            Log.d(RemoteMovieDataSource.class.getSimpleName(), exc.toString());
-        } catch (IOException exc) {
-            Log.d(RemoteMovieDataSource.class.getSimpleName(), exc.toString());
-        }
-
-        return popularResponse;
-    }
-
-    private PopularResponse parsePopularResponse(String reponse) {
-        Gson gson = new Gson();
-        return gson.fromJson(reponse, PopularResponse.class);
-    }
 }

@@ -57,7 +57,7 @@ public class TopRatedResponse {
                 "page=" + page +
                 ", totalResults=" + totalResults +
                 ", totalPages=" + totalPages +
-                ", results=" + results.get(0) +
+                ", results=" + results +
                 '}';
     }
 }

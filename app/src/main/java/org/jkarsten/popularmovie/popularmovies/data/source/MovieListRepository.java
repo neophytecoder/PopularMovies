@@ -10,25 +10,28 @@ import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 public class MovieListRepository implements MovieDataSource,
         MovieDataSource.LoadPopularResponseCallback, MovieDataSource.LoadTopRatedResponseCallback {
     private MovieDataSource mRemoteDataSource;
+    private MovieDataSource mLocalDataSource;
     private int currentPage = 1;
     private LoadMoviesCallback mLoadMoviesCallback;
 
-    public MovieListRepository(MovieDataSource remoteDataSource) {
+    public MovieListRepository(MovieDataSource remoteDataSource, MovieDataSource localDataSource) {
         mRemoteDataSource = remoteDataSource;
-        // TODO: 6/29/17  add local data source
+        mLocalDataSource = localDataSource;
         // TODO: 6/29/17 deal with page number
     }
 
     @Override
     public void getPopularMovies(LoadMoviesCallback callback) {
         mLoadMoviesCallback = callback;
-        mRemoteDataSource.getPopularResponse(currentPage, this);
+        //mRemoteDataSource.getPopularResponse(currentPage, this);
+        mLocalDataSource.getPopularResponse(currentPage, this);
     }
 
     @Override
     public void getTopRatedMovies(LoadMoviesCallback callback) {
         mLoadMoviesCallback = callback;
-        mRemoteDataSource.getTopRatedResponse(currentPage, this);
+        mLocalDataSource.getTopRatedResponse(currentPage, this);
+        //mRemoteDataSource.getTopRatedResponse(currentPage, this);
     }
 
     @Override
