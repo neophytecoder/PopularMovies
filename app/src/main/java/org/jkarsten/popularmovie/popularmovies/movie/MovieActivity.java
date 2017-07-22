@@ -2,10 +2,12 @@ package org.jkarsten.popularmovie.popularmovies.movie;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.PersistableBundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,43 +21,79 @@ import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.text.SimpleDateFormat;
 
+import javax.inject.Inject;
+
 public class MovieActivity extends AppCompatActivity implements MovieContract.View {
-    Movie mMovie;
+    public static final String MOVIE_KEY = "movie";
 
     ImageView mMoviePosterImageView;
+    Bundle mSavedInstanceState;
+
+    Movie movie;
+
+    @Inject
+    MovieContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        DaggerMovieComponent
+                .builder()
+                .movieModule(new MovieModule(this))
+                .build()
+                .inject(this);
+
         getAllViews();
-        setMovieFromIntent();
-        fillViews();
+        mSavedInstanceState = savedInstanceState;
+    }
+
+    @Override
+    public void showMovie(Movie movie) {
+        String path = ImageUtil.buildImageUri(movie.getPosterPath(), this);
+        Picasso.with(this).load(path).into(mMoviePosterImageView);
+
+        ActivityMovieBinding movieBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
+        movieBinding.setMovie(movie);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        mPresenter.start();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.stop();
+        super.onStop();
     }
 
     private void getAllViews() {
         mMoviePosterImageView = (ImageView) findViewById(R.id.moviePosterImageVIew);
     }
 
-    private void setMovieFromIntent() {
-        Intent myIntent = getIntent();
-        mMovie =  (Movie) myIntent.getSerializableExtra(MainActivity.MOVIE);
+    @Override
+    public Movie getMovie() {
+        if (mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
+            movie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
+        } else {
+            Intent myIntent = getIntent();
+            movie =  (Movie) myIntent.getSerializableExtra(MainActivity.MOVIE);
+        }
+
+        return movie;
     }
 
-    private void fillViews() {
-        String path = ImageUtil.buildImageUri(mMovie.getPosterPath(), this);
-        Picasso.with(this).load(path).into(mMoviePosterImageView);
 
-        ActivityMovieBinding movieBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
-        movieBinding.setMovie(mMovie);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(MOVIE_KEY, movie);
+
+        super.onSaveInstanceState(outState);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -71,5 +109,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     @Override
     public void setPresenter(MovieContract.Presenter presenter) {
 
+    }
+
+    public void onMarkAsFavoriteToggle(View view) {
+        mPresenter.onAddToFavorite();
     }
 }

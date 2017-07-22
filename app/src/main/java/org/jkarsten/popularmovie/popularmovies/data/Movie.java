@@ -51,6 +51,8 @@ public class Movie implements Serializable {
     private String year;
     private String topAverage;
 
+    private transient boolean markAsFavorite;
+
     public int getVoteCount() {
         return voteCount;
     }
@@ -161,6 +163,14 @@ public class Movie implements Serializable {
 
     public String getTopAverage() {
         return voteAverage+"/10.0";
+    }
+
+    public void setMarkAsFavorite(boolean markAsFavorite) {
+        this.markAsFavorite = markAsFavorite;
+    }
+
+    public boolean getMarkAsFavorite() {
+        return markAsFavorite;
     }
 
     @Override

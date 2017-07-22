@@ -9,4 +9,5 @@
     <string name="mock_rating">8.2/10</string>
     <string name="show_loading">movies are being loaded</string>
     <string name="movie_poster_desc">Movie poster</string>
+    <string name="mark_as_fav_toggle">favorite</string>
 </resources>

@@ -10,10 +10,11 @@ import org.jkarsten.popularmovie.popularmovies.data.Movie;
 
 public class MovieContract {
     interface View extends BaseView<Presenter> {
-
+        void showMovie(Movie movie);
+        Movie getMovie();
     }
 
     interface Presenter extends BasePresenter {
-        void setMovie(Movie movie);
+        void onAddToFavorite();
     }
 }

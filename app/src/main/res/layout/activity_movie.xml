@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
             name="movie"
@@ -7,7 +8,6 @@
     </data>
 
     <ScrollView
-
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -52,7 +52,8 @@
                 android:textAppearance="@android:style/TextAppearance.Medium"
                 app:layout_constraintLeft_toRightOf="@+id/moviePosterImageVIew"
                 app:layout_constraintTop_toTopOf="@+id/moviePosterImageVIew"
-                tools:text="@{movie.year}" />
+                android:text="@{movie.year}"
+                tools:text="@string/mock_year"/>
 
             <TextView
                 android:id="@+id/ratingTextView"
@@ -76,6 +77,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/moviePosterImageVIew"
                 tools:text="@string/lorem_ipsum"
                 android:text="@{movie.overview}"/>
+
+            <ToggleButton
+                android:id="@+id/toggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mark_as_fav_toggle"
+                android:layout_marginLeft="0dp"
+                app:layout_constraintLeft_toLeftOf="@+id/ratingTextView"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@+id/ratingTextView"
+                android:checked="@{movie.markAsFavorite}"
+                android:onClick="onMarkAsFavoriteToggle"/>
         </android.support.constraint.ConstraintLayout>
+
     </ScrollView>
 </layout>
