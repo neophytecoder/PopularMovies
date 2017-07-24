@@ -1,14 +1,18 @@
 package org.jkarsten.popularmovie.popularmovies.data.source.local;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
+import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieDBUtils;
 
 /**
  * Created by juankarsten on 7/16/17.
@@ -73,5 +77,18 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void saveMovie(final Movie movie) {
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                ContentValues values = PopularMovieDBUtils.moviesToContentValues(movie);
+                mContext.getContentResolver().update(PopularMovieContract.CONTENT_URI_MOVIES, values, null, null);
+                return null;
+            }
+        };
+        asyncTask.execute();
     }
 }

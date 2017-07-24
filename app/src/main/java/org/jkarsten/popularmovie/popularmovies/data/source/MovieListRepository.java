@@ -1,5 +1,6 @@
 package org.jkarsten.popularmovie.popularmovies.data.source;
 
+import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 
@@ -69,5 +70,10 @@ public class MovieListRepository implements MovieDataSource,
     @Override
     public void onDataNotAvailable() {
         mLoadMoviesCallback.onDataNotAvailable();
+    }
+
+    @Override
+    public void saveMovie(Movie movie) {
+        mLocalDataSource.saveMovie(movie);
     }
 }

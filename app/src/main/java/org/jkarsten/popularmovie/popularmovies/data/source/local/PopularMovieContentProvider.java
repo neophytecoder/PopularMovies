@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.*;
+import android.util.Log;
 
 /**
  * Created by juankarsten on 7/13/17.
@@ -117,6 +118,28 @@ public class PopularMovieContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        switch (match) {
+            case MOVIE_TASKS:
+                try {
+                    String columnId = values.getAsString(PopularMovieContract.MovieEntry._ID);
+                    values.remove(PopularMovieContract.MovieEntry._ID);
+                    int rowAffected = database.update(PopularMovieContract.MovieEntry.TABLE_NAME, values,
+                            PopularMovieContract.MovieEntry._ID+"=?", new String[]{columnId+""});
+                    if (rowAffected > 0) {
+                        Uri newUri = ContentUris.withAppendedId(uri, Long.parseLong(columnId));
+                        getContext().getContentResolver().notifyChange(newUri, null);
+                        getContext().getContentResolver().notifyChange(uri, null);
+                    }
+                } catch (Exception exc) {
+                    Log.d(PopularMovieContentProvider.class.getSimpleName(), exc.toString());
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        database.close();
         return 0;
     }
 

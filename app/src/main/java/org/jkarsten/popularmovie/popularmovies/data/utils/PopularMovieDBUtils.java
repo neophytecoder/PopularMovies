@@ -36,6 +36,7 @@ public class PopularMovieDBUtils {
     public static final ContentValues moviesToContentValues(Movie movie) {
         ContentValues values = new ContentValues();
 
+        values.put(PopularMovieContract.MovieEntry._ID, movie.getColumnId());
         values.put(PopularMovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
         values.put(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
         values.put(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime() / 1000);
@@ -43,7 +44,7 @@ public class PopularMovieDBUtils {
         values.put(PopularMovieContract.MovieEntry.COLUMN_VIDEO, true);
         values.put(PopularMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
         values.put(PopularMovieContract.MovieEntry.COLUMN_ID, movie.getId());
-        values.put(PopularMovieContract.MovieEntry.COLUMN_FAVORITE, false);
+        values.put(PopularMovieContract.MovieEntry.COLUMN_FAVORITE, movie.getMarkAsFavorite());
         return values;
     }
 
@@ -57,6 +58,10 @@ public class PopularMovieDBUtils {
 
         int dateInUnixTimeStamp = cursor.getInt(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE));
         movie.setReleaseDate(new Date(dateInUnixTimeStamp * 1000));
+
+        movie.setColumnId(cursor.getLong(cursor.getColumnIndex(PopularMovieContract.MovieEntry._ID)));
+
+        movie.setMarkAsFavorite(cursor.getInt(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_FAVORITE))==1);
 
         return movie;
 

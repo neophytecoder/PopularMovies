@@ -51,7 +51,8 @@ public class Movie implements Serializable {
     private String year;
     private String topAverage;
 
-    private transient boolean markAsFavorite;
+    private boolean markAsFavorite;
+    private long columnId;
 
     public int getVoteCount() {
         return voteCount;
@@ -171,6 +172,14 @@ public class Movie implements Serializable {
 
     public boolean getMarkAsFavorite() {
         return markAsFavorite;
+    }
+
+    public long getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(long columnId) {
+        this.columnId = columnId;
     }
 
     @Override

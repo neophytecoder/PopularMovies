@@ -30,6 +30,7 @@ public interface MovieDataSource {
      void getTopRatedMovies(LoadMoviesCallback callback);
      void getPopularResponse(int page, LoadPopularResponseCallback callback);
      void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback);
+    void saveMovie(Movie movie);
      int getTotalPages();
      int getTotalResults();
 

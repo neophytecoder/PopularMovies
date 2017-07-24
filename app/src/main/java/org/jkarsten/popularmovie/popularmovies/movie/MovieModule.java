@@ -1,6 +1,11 @@
 package org.jkarsten.popularmovie.popularmovies.movie;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieListRepository;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -13,6 +18,7 @@ import dagger.Provides;
 public class MovieModule {
     private MovieContract.View mView;
 
+
     public MovieModule(MovieContract.View view) {
         mView = view;
     }
@@ -23,7 +29,9 @@ public class MovieModule {
     }
 
     @Provides
-    public MovieContract.Presenter provideMoviePresenter(MovieContract.View view) {
-        return new MoviePresenter(view);
+    public MovieContract.Presenter provideMoviePresenter(
+            MovieContract.View view,
+            @Named(MovieDataModule.REPO) MovieDataSource repo) {
+        return new MoviePresenter(view, repo);
     }
 }

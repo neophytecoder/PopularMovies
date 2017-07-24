@@ -1,6 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.movie;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 
 import javax.inject.Inject;
 
@@ -11,9 +12,12 @@ import javax.inject.Inject;
 public class MoviePresenter implements MovieContract.Presenter {
     private Movie mMovie;
     MovieContract.View mView;
+    MovieDataSource mRepository;
 
-    public MoviePresenter(MovieContract.View view) {
-        this.mView = view;
+
+    public MoviePresenter(MovieContract.View view, MovieDataSource repository) {
+        mView = view;
+        mRepository = repository;
     }
 
     @Override
@@ -26,7 +30,7 @@ public class MoviePresenter implements MovieContract.Presenter {
 
     @Override
     public void stop() {
-        // TODO: 7/22/17 save markasfavorite to database
+        mRepository.saveMovie(mMovie);
     }
 
 

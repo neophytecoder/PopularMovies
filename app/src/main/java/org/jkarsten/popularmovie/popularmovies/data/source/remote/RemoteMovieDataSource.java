@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 
+import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
@@ -112,5 +113,8 @@ public class RemoteMovieDataSource implements MovieDataSource  {
         return totalResult;
     }
 
+    @Override
+    public void saveMovie(Movie movie) {
 
+    }
 }

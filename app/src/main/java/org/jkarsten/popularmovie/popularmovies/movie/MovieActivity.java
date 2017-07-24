@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.databinding.ActivityMovieBinding;
 import org.jkarsten.popularmovie.popularmovies.movielist.MainActivity;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
@@ -43,6 +44,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         DaggerMovieComponent
                 .builder()
                 .movieModule(new MovieModule(this))
+                .movieDataModule(new MovieDataModule(this, getSupportLoaderManager()))
                 .build()
                 .inject(this);
 
