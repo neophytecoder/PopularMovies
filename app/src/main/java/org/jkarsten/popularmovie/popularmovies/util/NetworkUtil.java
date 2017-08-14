@@ -31,14 +31,18 @@ public class NetworkUtil {
         return response;
     }
 
-    public static Uri buildPageUri(String path, int page) {
-        Uri uri = Uri.parse(RemoteMovieDataSource.BASE_URL).buildUpon()
-                .appendPath(RemoteMovieDataSource.MOVIE_PATH)
-                .appendPath(path)
-                .appendQueryParameter(RemoteMovieDataSource.PARAM_API_KEY, APIKey.API_KEY)
+    public static Uri buildPageUri(int page, String... paths) {
+        Uri.Builder uriBuilder = Uri.parse(RemoteMovieDataSource.BASE_URL).buildUpon()
+                .appendPath(RemoteMovieDataSource.MOVIE_PATH);
+        for (String path: paths) {
+            uriBuilder = uriBuilder.appendPath(path);
+        }
+        Uri uri = uriBuilder.appendQueryParameter(RemoteMovieDataSource.PARAM_API_KEY, APIKey.API_KEY)
                 .appendQueryParameter(RemoteMovieDataSource.PARAM_LANGUAGE, "en-US")
                 .appendQueryParameter(RemoteMovieDataSource.PARAM_PAGE, page+"")
                 .build();
         return uri;
     }
+
+
 }

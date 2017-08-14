@@ -6,6 +6,7 @@ import android.os.PersistableBundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,12 +16,15 @@ import com.squareup.picasso.Picasso;
 
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.Review;
+import org.jkarsten.popularmovie.popularmovies.data.Trailer;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.databinding.ActivityMovieBinding;
 import org.jkarsten.popularmovie.popularmovies.movielist.MainActivity;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -116,4 +120,15 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     public void onMarkAsFavoriteToggle(View view) {
         mPresenter.onAddToFavorite();
     }
+
+    @Override
+    public void showReviews(List<Review> reviews) {
+        Log.d(MovieActivity.class.getSimpleName(), (reviews!=null)?reviews.toString()+" "+reviews.size():"");
+    }
+
+    @Override
+    public void showTrailers(List<Trailer> trailers) {
+        Log.d(MovieActivity.class.getSimpleName(), (trailers!=null)?trailers.toString()+" "+trailers.size():"");
+    }
 }
+

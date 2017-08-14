@@ -4,6 +4,8 @@ import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieListRepository;
+import org.jkarsten.popularmovie.popularmovies.data.source.ReviewSource;
+import org.jkarsten.popularmovie.popularmovies.data.source.TrailerSource;
 
 import javax.inject.Named;
 
@@ -30,8 +32,8 @@ public class MovieModule {
 
     @Provides
     public MovieContract.Presenter provideMoviePresenter(
-            MovieContract.View view,
-            @Named(MovieDataModule.REPO) MovieDataSource repo) {
-        return new MoviePresenter(view, repo);
+            MovieContract.View view, @Named(MovieDataModule.REPO) MovieDataSource repo,
+            ReviewSource reviewSourceRepo, TrailerSource trailerSourceRepo) {
+        return new MoviePresenter(view, repo, reviewSourceRepo, trailerSourceRepo);
     }
 }

@@ -23,7 +23,7 @@ import okhttp3.Response;
 public class PopularMovieNetworkUtil {
 
     public final static PopularResponse getPopularResponseHelper(int page, OkHttpClient client) {
-        Uri uri = NetworkUtil.buildPageUri(RemoteMovieDataSource.POPULAR_PATH, page);
+        Uri uri = NetworkUtil.buildPageUri(page, RemoteMovieDataSource.POPULAR_PATH);
 
         PopularResponse popularResponse = null;
         try {
@@ -52,7 +52,7 @@ public class PopularMovieNetworkUtil {
     }
 
     public final static TopRatedResponse getTopRateResponseHelper(int page, OkHttpClient mClient) {
-        Uri uri = NetworkUtil.buildPageUri(RemoteMovieDataSource.TOP_RATED_PATH, page);
+        Uri uri = NetworkUtil.buildPageUri(page, RemoteMovieDataSource.TOP_RATED_PATH);
 
         TopRatedResponse topRatedResponse = null;
         try {

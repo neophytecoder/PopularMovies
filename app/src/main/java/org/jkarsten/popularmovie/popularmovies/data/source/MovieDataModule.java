@@ -5,6 +5,8 @@ import android.support.v4.app.LoaderManager;
 
 import org.jkarsten.popularmovie.popularmovies.data.source.local.LocalMovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.source.remote.RemoteMovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.data.source.remote.RemoteReviewSource;
+import org.jkarsten.popularmovie.popularmovies.data.source.remote.RemoteTrailerSource;
 
 import javax.inject.Named;
 
@@ -39,9 +41,20 @@ public class MovieDataModule {
         return new LocalMovieDataSource(mLoaderManager, mContext);
     }
 
+
     @Provides @Named(REPO)
     public MovieDataSource provideMovieRepository(@Named(REMOTE) MovieDataSource remoteMovieDataSource,
                                                   @Named(LOCAL) MovieDataSource localMovieDataSource) {
         return new MovieListRepository(remoteMovieDataSource, localMovieDataSource);
+    }
+
+    @Provides
+    public ReviewSource provideReviewResource() {
+        return new RemoteReviewSource(mLoaderManager, mContext);
+    }
+
+    @Provides
+    public TrailerSource provideTrailerResource() {
+        return new RemoteTrailerSource(mLoaderManager, mContext);
     }
 }

@@ -96,6 +96,7 @@ public class PopularMovieContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         switch (match) {
             case MOVIE_TASKS:
+                values.remove(PopularMovieContract.MovieEntry._ID);
                 long id = database.insert(PopularMovieContract.MovieEntry.TABLE_NAME, null, values);
                 if (id >=0 ) {
                     newUri = ContentUris.withAppendedId(uri, id);

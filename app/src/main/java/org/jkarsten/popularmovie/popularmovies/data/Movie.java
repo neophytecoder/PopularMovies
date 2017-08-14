@@ -52,7 +52,7 @@ public class Movie implements Serializable {
     private String topAverage;
 
     private boolean markAsFavorite;
-    private long columnId;
+    private long columnId = -1;
 
     public int getVoteCount() {
         return voteCount;

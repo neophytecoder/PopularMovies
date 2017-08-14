@@ -36,7 +36,8 @@ public class PopularMovieDBUtils {
     public static final ContentValues moviesToContentValues(Movie movie) {
         ContentValues values = new ContentValues();
 
-        values.put(PopularMovieContract.MovieEntry._ID, movie.getColumnId());
+        if (movie.getColumnId() != -1)
+            values.put(PopularMovieContract.MovieEntry._ID, movie.getColumnId());
         values.put(PopularMovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
         values.put(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
         values.put(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime() / 1000);
