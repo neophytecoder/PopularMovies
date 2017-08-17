@@ -9,9 +9,6 @@
         <variable
             name="mMovie"
             type="org.jkarsten.popularmovie.popularmovies.movie.MovieViewModel"/>
-        <variable
-            name="listener"
-            type="android.view.View.OnClickListener"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -193,81 +190,29 @@
                     card_view:cardCornerRadius="4dp"
                     card_view:cardUseCompatPadding="true">
 
-                    <LinearLayout
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/trailers_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/trailer_one_constraintlayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="75dp"
-                            android:paddingBottom="8dp"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/play_one_imageview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@android:drawable/ic_media_play"
-                                android:layout_gravity="center_vertical"/>
-
-                            <TextView
-                                android:id="@+id/trailer_one_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:text="Trailer 1"
-                                android:layout_gravity="center_vertical"
-                                android:textSize="32sp"/>
-
-
-                        </LinearLayout>
-
-                        <ImageView
-                            android:paddingLeft="4dp"
-                            android:paddingRight="4dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:src="@color/cardview_dark_background"
-                            />
-
-                        <LinearLayout
-                            android:id="@+id/trailer_two_constraintlayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="75dp"
-                            android:paddingTop="8dp"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:id="@+id/play_two_imageview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@android:drawable/ic_media_play"
-                                android:layout_gravity="center_vertical"/>
-
-                            <TextView
-                                android:id="@+id/trailer_two_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:text="Trailer 2"
-                                android:layout_gravity="center_vertical"
-                                android:textSize="32sp"/>
-
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                        android:layout_height="match_parent"/>
 
 
                 </android.support.v7.widget.CardView>
 
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardUseCompatPadding="true">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/reviews_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
@@ -280,17 +225,13 @@
             app:layout_anchor="@id/app_bar_layout"
             app:layout_anchorGravity="bottom|right|end"
             app:fabSize="normal"
-
-            android:src="@mipmap/ic_launcher"
-            android:onClick="onMarkedAsFavorite"
-
-            android:elevation="6dp"
+            android:src="@drawable/favourite_star"
+            android:elevation="4dp"
             app:pressedTranslationZ="12dp"
             app:rippleColor="@android:color/white"
             app:borderWidth="0dp"
             android:layout_margin="16dp"
             android:clickable="true"/>
-
 
     </android.support.design.widget.CoordinatorLayout>
 

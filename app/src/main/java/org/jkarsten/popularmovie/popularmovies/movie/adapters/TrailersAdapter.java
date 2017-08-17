@@ -1,6 +1,8 @@
 package org.jkarsten.popularmovie.popularmovies.movie.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,22 +58,32 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         Log.d(TrailersAdapter.class.getSimpleName(), "getItemCount");
         if (mTrailers==null)
             return 0;
+        if (mTrailers.size() > 4) {
+            return 4;
+        }
         return mTrailers.size();
     }
 
     class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView trailerTV;
         ImageView playerIV;
+        ImageView bottomLineIV;
+        View mItemView;
 
         public TrailerViewHolder(View itemView) {
             super(itemView);
+            mItemView = itemView;
             trailerTV = (TextView) itemView.findViewById(R.id.trailer_textview);
             playerIV = (ImageView) itemView.findViewById(R.id.play_imageview);
+            bottomLineIV = (ImageView) itemView.findViewById(R.id.bottom_row_line);
         }
 
         public void bind(final Trailer trailer, int position) {
+            if (position == 3) {
+                bottomLineIV.setVisibility(View.GONE);
+            }
             trailerTV.setText("Trailer " + (position+1));
-            playerIV.setOnClickListener(this);
+            mItemView.setOnClickListener(this);
         }
 
         @Override

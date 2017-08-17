@@ -51,6 +51,7 @@ public class MoviePresenter implements MovieContract.Presenter, ReviewSource.Loa
     public void onAddToFavorite() {
         boolean markAsFav = !mMovie.getMarkAsFavorite();
         mMovie.setMarkAsFavorite(markAsFav);
+        mView.showAddToFavoriteChanged(markAsFav);
     }
 
     @Override

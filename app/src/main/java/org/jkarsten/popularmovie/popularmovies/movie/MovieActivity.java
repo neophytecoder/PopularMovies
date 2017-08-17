@@ -1,5 +1,6 @@
 package org.jkarsten.popularmovie.popularmovies.movie;
 
+import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
@@ -35,20 +36,22 @@ import javax.inject.Inject;
 
 public class MovieActivity extends AppCompatActivity implements MovieContract.View,
         TrailersAdapter.OnTrailerClickListener {
+
     public static final String MOVIE_KEY = "movie";
 
-    ImageView mMoviePosterImageView;
-    ImageView mHeaderImageView;
-    Bundle mSavedInstanceState;
-
     Movie mMovie;
-
     @Inject
     MovieContract.Presenter mPresenter;
-
     ActivityMovieBinding mMovieBinding;
 
+    Bundle mSavedInstanceState;
     RecyclerView mReviewsRV;
+    RecyclerView mTrailersRV;
+    FloatingActionButton mFloatingActionButton;
+    ImageView mMoviePosterImageView;
+    ImageView mHeaderImageView;
+
+    TrailersAdapter mTrailersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,43 +66,15 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        try {
-            DaggerMovieComponent
+        DaggerMovieComponent
                     .builder()
                     .movieModule(new MovieModule(this))
                     .movieDataModule(new MovieDataModule(this, getSupportLoaderManager()))
                     .build()
                     .inject(this);
-        } catch (Exception exc) {
-            Log.d(MovieActivity.class.getSimpleName(), exc.toString());
-        }
+
         mSavedInstanceState = savedInstanceState;
     }
-
-    @Override
-    public void showMovie(Movie movie) {
-        mMovie = movie;
-
-        mMovieBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
-        mMovieBinding.setMMovie(new MovieViewModel(mMovie));
-
-        String path = ImageUtil.buildImageUri(movie.getPosterPath(), this);
-        Log.d(MovieActivity.class.getSimpleName(), mMovie + " " +path);
-        Picasso.with(this).load(path).into(mMoviePosterImageView);
-        Picasso.with(this).load(path).into(mHeaderImageView);
-
-        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
-        toolbarLayout.setTitle(mMovie.getTitle());
-    }
-
-
-    public void onMarkedAsFavorite(View view) {
-        Log.d(MovieActivity.class.getSimpleName(), "toggled favorite");
-        mPresenter.onAddToFavorite();
-        //mFloatingActionButton.setImageDrawable(getDrawable(R.mipmap.ic_launcher_round));
-        //mFloatingActionButton.setImageResource(R.mipmap.ic_launcher_round);
-    }
-
 
     @Override
     protected void onStart() {
@@ -115,15 +90,46 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     private void getAllViews() {
-        mReviewsRV = (RecyclerView) findViewById(R.id.reviews_recyclerview);
-        TrailersAdapter mTrailersAdapter = new TrailersAdapter(this, this);
-        mReviewsRV.setAdapter(mTrailersAdapter);
-        mReviewsRV.setLayoutManager(new LinearLayoutManager(this));
+        mMovieBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie);
 
+        mTrailersRV = (RecyclerView) findViewById(R.id.trailers_recyclerview);
+        mTrailersAdapter = new TrailersAdapter(this, this);
+        mTrailersRV.setAdapter(mTrailersAdapter);
+        mTrailersRV.setLayoutManager(new LinearLayoutManager(this));
 
         mMoviePosterImageView = (ImageView) findViewById(R.id.moviePosterImageVIew);
         mHeaderImageView = (ImageView) findViewById(R.id.image_header);
         Log.d(MovieActivity.class.getSimpleName(), "recycler view");
+
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.toggleButton);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(MOVIE_KEY, mMovie);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void showMovie(Movie movie) {
+        mMovie = movie;
+        mMovieBinding.setMMovie(new MovieViewModel(mMovie));
+
+        String path = ImageUtil.buildImageUri(movie.getPosterPath(), this);
+        Log.d(MovieActivity.class.getSimpleName(), mMovie + " " +path);
+        Picasso.with(this).load(path).into(mMoviePosterImageView);
+        Picasso.with(this).load(path).into(mHeaderImageView);
+
+        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+        toolbarLayout.setTitle(mMovie.getTitle());
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onMarkedAsFavorite(v);
+            }
+        });
+        showAddToFavoriteChanged(mMovie.getMarkAsFavorite());
     }
 
     @Override
@@ -136,14 +142,6 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         }
 
         return mMovie;
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(MOVIE_KEY, mMovie);
-
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -169,43 +167,15 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void showTrailers(final List<Trailer> trailers) {
-//        Log.d(MovieActivity.class.getSimpleName(),  (trailers!=null)?mTrailersRV.getAdapter()+" "+trailers.size()+" ":"");
-//        mTrailersAdapter.setTrailers(trailers);
-//        mTrailersAdapter.notifyDataSetChanged();
-
         if (trailers==null)
             return;
-        if (trailers.size()>=1) {
-            mMovieBinding.trailerOneTextview.setText("Trailer 1");
-            mMovieBinding.trailerOneConstraintlayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Trailer trailer = trailers.get(0);
-                    String url = "https://www.youtube.com/watch?v=" + trailer.getKey();
-                    openWebPage(url);
-                }
-            });
-        } else {
-            mMovieBinding.trailerOneConstraintlayout.setVisibility(View.GONE);
-        }
-
-        if (trailers.size()>=2) {
-            mMovieBinding.trailerTwoTextview.setText("Trailer 2");
-            mMovieBinding.trailerTwoConstraintlayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Trailer trailer = trailers.get(1);
-                    String url = "https://www.youtube.com/watch?v=" + trailer.getKey();
-                    openWebPage(url);
-                }
-            });
-        } else {
-            mMovieBinding.trailerTwoConstraintlayout.setVisibility(View.GONE);
-        }
+        mTrailersAdapter.setTrailers(trailers);
 
     }
 
-    private void openWebPage(String url) {
+    @Override
+    public void onClick(Trailer trailer) {
+        String url = "https://www.youtube.com/watch?v=" + trailer.getKey();
         Uri webPage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -213,9 +183,18 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         }
     }
 
-    @Override
-    public void onClick(Trailer trailer) {
+    public void onMarkedAsFavorite(View view) {
+        Log.d(MovieActivity.class.getSimpleName(), "toggled favorite");
+        mPresenter.onAddToFavorite();
+    }
 
+    @Override
+    public void showAddToFavoriteChanged(boolean isMarked) {
+        if (isMarked) {
+            mFloatingActionButton.setImageResource(R.drawable.pentagon_made_of_stars);
+        } else {
+            mFloatingActionButton.setImageResource(R.drawable.favourite_star);
+        }
     }
 }
 

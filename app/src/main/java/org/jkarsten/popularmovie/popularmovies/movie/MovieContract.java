@@ -18,6 +18,7 @@ public class MovieContract {
         Movie getMovie();
         void showReviews(List<Review> reviews);
         void showTrailers(List<Trailer> trailers);
+        void showAddToFavoriteChanged(boolean isMarked);
     }
 
     interface Presenter extends BasePresenter {
