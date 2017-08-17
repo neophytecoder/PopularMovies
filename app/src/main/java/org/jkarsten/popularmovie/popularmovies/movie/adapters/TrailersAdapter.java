@@ -1,0 +1,88 @@
+package org.jkarsten.popularmovie.popularmovies.movie.adapters;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.jkarsten.popularmovie.popularmovies.R;
+import org.jkarsten.popularmovie.popularmovies.data.Trailer;
+import org.jkarsten.popularmovie.popularmovies.movielist.MovieListAdapter;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by juankarsten on 8/15/17.
+ */
+
+public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailerViewHolder> {
+    List<Trailer> mTrailers;
+    Context mContext;
+    OnTrailerClickListener mListener;
+
+    public TrailersAdapter(Context context, OnTrailerClickListener listener) {
+        mContext = context;
+        mListener = listener;
+    }
+
+    public void setTrailers(List<Trailer> trailers) {
+        this.mTrailers = trailers;
+        this.notifyDataSetChanged();
+        Log.d(TrailersAdapter.class.getSimpleName(), "setTrailers " + trailers.size());
+    }
+
+    @Override
+    public TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TrailersAdapter.class.getSimpleName(), "onCreateViewHolder");
+        View view = LayoutInflater.from(mContext).inflate(R.layout.trailer_item, parent, false);
+        return new TrailerViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(TrailerViewHolder holder, int position) {
+        Log.d(TrailersAdapter.class.getSimpleName(), "onBindViewHolder");
+        if (getItemCount()>position)
+            holder.bind(mTrailers.get(position), position);
+    }
+
+    @Override
+    public int getItemCount() {
+        Log.d(TrailersAdapter.class.getSimpleName(), "getItemCount");
+        if (mTrailers==null)
+            return 0;
+        return mTrailers.size();
+    }
+
+    class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView trailerTV;
+        ImageView playerIV;
+
+        public TrailerViewHolder(View itemView) {
+            super(itemView);
+            trailerTV = (TextView) itemView.findViewById(R.id.trailer_textview);
+            playerIV = (ImageView) itemView.findViewById(R.id.play_imageview);
+        }
+
+        public void bind(final Trailer trailer, int position) {
+            trailerTV.setText("Trailer " + (position+1));
+            playerIV.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int itemId = getAdapterPosition();
+            Trailer trailer = mTrailers.get(itemId);
+            mListener.onClick(trailer);
+        }
+    }
+
+    public interface OnTrailerClickListener {
+        void onClick(Trailer trailer);
+    }
+}

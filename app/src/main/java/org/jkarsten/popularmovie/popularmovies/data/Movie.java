@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -189,16 +190,19 @@ public class Movie implements Serializable {
                 ", id=" + id +
                 ", video=" + video +
                 ", title='" + title + '\'' +
+                ", voteAverage=" + voteAverage +
                 ", popularity=" + popularity +
                 ", posterPath='" + posterPath + '\'' +
                 ", originalLanguage='" + originalLanguage + '\'' +
                 ", originalTitle='" + originalTitle + '\'' +
-                ", genreIds='" + genreIds + '\'' +
+                ", genreIds=" + Arrays.toString(genreIds) +
                 ", overview='" + overview + '\'' +
                 ", releaseDate=" + releaseDate +
                 ", backdropPath='" + backdropPath + '\'' +
+                ", year='" + year + '\'' +
+                ", topAverage='" + topAverage + '\'' +
+                ", markAsFavorite=" + markAsFavorite +
+                ", columnId=" + columnId +
                 '}';
     }
-
-
 }

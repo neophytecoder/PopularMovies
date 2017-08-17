@@ -1,95 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context="org.jkarsten.popularmovie.popularmovies.movie.MovieActivity">
     <data>
         <variable
-            name="movie"
-            type="org.jkarsten.popularmovie.popularmovies.data.Movie"/>
+            name="mMovie"
+            type="org.jkarsten.popularmovie.popularmovies.movie.MovieViewModel"/>
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener"/>
     </data>
 
-    <ScrollView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.jkarsten.popularmovie.popularmovies.movie.MovieActivity">
+        android:fitsSystemWindows="true">
 
-        <android.support.constraint.ConstraintLayout
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/appbar_header_height"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <ImageView
-                android:id="@+id/moviePosterImageVIew"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/movie_poster_desc"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movieTitleTextView"
-                app:srcCompat="@mipmap/ic_launcher" />
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:expandedTitleMarginStart="32dp">
 
-            <TextView
-                android:id="@+id/movieTitleTextView"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/image_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax"
+                    android:scaleType="centerCrop"
+                    app:imagePath="@{mMovie.imagePath}"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_gravity="top"
+                    android:background="@drawable/scrim"
+                    android:fitsSystemWindows="true"/>
+
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="160dp"-->
+                    <!--android:layout_gravity="bottom"-->
+                    <!--android:background="@drawable/scrim"/>-->
+
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                </android.support.v7.widget.Toolbar>
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:textAppearance="@android:style/TextAppearance.Large"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/mock_title"
-                android:text="@{movie.title}"/>
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/yearTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:textAppearance="@android:style/TextAppearance.Medium"
-                app:layout_constraintLeft_toRightOf="@+id/moviePosterImageVIew"
-                app:layout_constraintTop_toTopOf="@+id/moviePosterImageVIew"
-                android:text="@{movie.year}"
-                tools:text="@string/mock_year"/>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardUseCompatPadding="true">
 
-            <TextView
-                android:id="@+id/ratingTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textAppearance="@android:style/TextAppearance.Small"
-                app:layout_constraintLeft_toLeftOf="@+id/yearTextView"
-                app:layout_constraintTop_toBottomOf="@+id/yearTextView"
-                tools:text="@string/mock_rating"
-                android:text="@{movie.topAverage}"/>
+                    <TextView
+                        android:padding="16dp"
+                        android:id="@+id/movieTitleTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="@string/mock_title"
+                        android:text="@{mMovie.title}"
+                        android:textSize="32sp"
+                        android:gravity="center_horizontal"/>
 
-            <TextView
-                android:id="@+id/overviewTextView"
-                android:layout_width="@dimen/overviewWidth"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintLeft_toLeftOf="@+id/moviePosterImageVIew"
-                app:layout_constraintTop_toBottomOf="@+id/moviePosterImageVIew"
-                tools:text="@string/lorem_ipsum"
-                android:text="@{movie.overview}"/>
+                </android.support.v7.widget.CardView>
 
-            <ToggleButton
-                android:id="@+id/toggleButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/mark_as_fav_toggle"
-                android:layout_marginLeft="0dp"
-                app:layout_constraintLeft_toLeftOf="@+id/ratingTextView"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/ratingTextView"
-                android:checked="@{movie.markAsFavorite}"
-                android:onClick="onMarkAsFavoriteToggle"/>
-        </android.support.constraint.ConstraintLayout>
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardUseCompatPadding="true">
 
-    </ScrollView>
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/moviePosterImageVIew"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:contentDescription="@string/movie_poster_desc"
+                            app:srcCompat="@mipmap/ic_launcher"
+                            app:imagePath="@{mMovie.imagePath}"
+                            android:layout_marginLeft="8dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginBottom="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <TextView
+                            android:id="@+id/ratingTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{mMovie.topAverage}"
+                            android:textSize="24sp"
+                            tools:text="@string/mock_rating"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginLeft="8dp"
+                            app:layout_constraintTop_toTopOf="@+id/moviePosterImageVIew"
+                            app:layout_constraintLeft_toRightOf="@id/moviePosterImageVIew"
+                             />
+
+                        <TextView
+                            android:id="@+id/yearTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:text="@{mMovie.year}"
+                            tools:text="@string/mock_year"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginLeft="0dp"
+                            app:layout_constraintTop_toBottomOf="@+id/ratingTextView"
+                            app:layout_constraintLeft_toLeftOf="@+id/ratingTextView"
+                             />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardUseCompatPadding="true">
+                    <TextView
+                        android:padding="16dp"
+                        android:id="@+id/overviewTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="@string/lorem_ipsum"
+                        android:text="@{mMovie.overview}"
+                        android:textSize="24sp"/>
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    card_view:cardElevation="4dp"
+                    card_view:cardCornerRadius="4dp"
+                    card_view:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/trailer_one_constraintlayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp"
+                            android:paddingBottom="8dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/play_one_imageview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@android:drawable/ic_media_play"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/trailer_one_textview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:text="Trailer 1"
+                                android:layout_gravity="center_vertical"
+                                android:textSize="32sp"/>
+
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:src="@color/cardview_dark_background"
+                            />
+
+                        <LinearLayout
+                            android:id="@+id/trailer_two_constraintlayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="75dp"
+                            android:paddingTop="8dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/play_two_imageview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@android:drawable/ic_media_play"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/trailer_two_textview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:text="Trailer 2"
+                                android:layout_gravity="center_vertical"
+                                android:textSize="32sp"/>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/reviews_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/toggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_anchor="@id/app_bar_layout"
+            app:layout_anchorGravity="bottom|right|end"
+            app:fabSize="normal"
+
+            android:src="@mipmap/ic_launcher"
+            android:onClick="onMarkedAsFavorite"
+
+            android:elevation="6dp"
+            app:pressedTranslationZ="12dp"
+            app:rippleColor="@android:color/white"
+            app:borderWidth="0dp"
+            android:layout_margin="16dp"
+            android:clickable="true"/>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+
 </layout>
