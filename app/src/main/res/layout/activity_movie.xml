@@ -198,7 +198,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Trailers"
+                            android:text="@string/trailers"
                             android:textSize="36sp" />
 
                         <android.support.v7.widget.RecyclerView
@@ -227,7 +227,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Reviews"
+                            android:text="@string/reviews"
                             android:textSize="36sp"/>
 
                         <android.support.v7.widget.RecyclerView
