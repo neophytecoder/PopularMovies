@@ -25,6 +25,7 @@ import org.jkarsten.popularmovie.popularmovies.data.Review;
 import org.jkarsten.popularmovie.popularmovies.data.Trailer;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.databinding.ActivityMovieBinding;
+import org.jkarsten.popularmovie.popularmovies.movie.adapters.ReviewAdapter;
 import org.jkarsten.popularmovie.popularmovies.movie.adapters.TrailersAdapter;
 import org.jkarsten.popularmovie.popularmovies.movielist.MainActivity;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
@@ -52,6 +53,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     ImageView mHeaderImageView;
 
     TrailersAdapter mTrailersAdapter;
+    ReviewAdapter mReviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +99,16 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         mTrailersRV.setAdapter(mTrailersAdapter);
         mTrailersRV.setLayoutManager(new LinearLayoutManager(this));
 
+        mReviewsRV = (RecyclerView) findViewById(R.id.reviews_recyclerview);
+        mReviewAdapter = new ReviewAdapter(this);
+        mReviewsRV.setAdapter(mReviewAdapter);
+        mReviewsRV.setLayoutManager(new LinearLayoutManager(this));
+
         mMoviePosterImageView = (ImageView) findViewById(R.id.moviePosterImageVIew);
         mHeaderImageView = (ImageView) findViewById(R.id.image_header);
         Log.d(MovieActivity.class.getSimpleName(), "recycler view");
+
+
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.toggleButton);
     }
@@ -163,6 +172,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     @Override
     public void showReviews(List<Review> reviews) {
         Log.d(MovieActivity.class.getSimpleName(), (reviews!=null)?reviews.toString()+" "+reviews.size():"");
+        mReviewAdapter.setReviews(reviews);
     }
 
     @Override
