@@ -7,4 +7,6 @@ package org.jkarsten.popularmovie.popularmovies;
 public interface BasePresenter {
     void start();
     void stop();
+
+
 }

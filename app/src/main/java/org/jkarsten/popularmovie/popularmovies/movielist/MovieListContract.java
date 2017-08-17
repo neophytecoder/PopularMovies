@@ -26,7 +26,6 @@ public interface MovieListContract {
         void viewMovie(Movie movie);
         void onPopularSelected();
         void onTopRatedSelected();
-        
-
+        void onFavoriteSelected();
     }
 }

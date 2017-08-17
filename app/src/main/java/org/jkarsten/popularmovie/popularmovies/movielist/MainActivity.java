@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements MovieListContract
             case R.id.top_rated:
                 mPresenter.onTopRatedSelected();
                 return true;
+            case R.id.favorite:
+                mPresenter.onFavoriteSelected();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

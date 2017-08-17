@@ -15,6 +15,8 @@ public class PopularMovieContract {
     public static final String PATH_MOVIE = "movies";
     public static final String PATH_POPULAR = "popular";
     public static final String PATH_TOP_RATED = "topRated";
+    public static final String PATH_FAVORITE = "favorite";
+
 
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final Uri CONTENT_URI_MOVIES = CONTENT_URI.buildUpon()
@@ -28,6 +30,12 @@ public class PopularMovieContract {
             .appendPath(PATH_MOVIE)
             .appendPath(PATH_TOP_RATED)
             .build();
+    public static final Uri CONTENT_URI_MOVIES_FAVORITE = CONTENT_URI.buildUpon()
+            .appendPath(PATH_MOVIE)
+            .appendPath(PATH_FAVORITE)
+            .build();
+
+
     public static final String LIMIT = "limit";
     public static final String DEFAULT_LIMIT = "20";
 
@@ -51,22 +59,6 @@ public class PopularMovieContract {
         public static final int MOVIE_TYPE_POPULAR = 1;
         public static final int MOVIE_TYPE_TOP_RATED = 2;
 
-//        @SerializedName("vote_count")
-//        private int voteCount;
-//
-//        private double popularity;
-//
-//        @SerializedName("original_language")
-//        private String originalLanguage;
-//
-//        @SerializedName("original_title")
-//        private String originalTitle;
-//
-//        @SerializedName("genre_ids")
-//        private int[] genreIds;
-//
-//        @SerializedName("backdrop_path")
-//        private String backdropPath;
 
     }
 }

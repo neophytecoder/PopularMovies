@@ -14,6 +14,7 @@ import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
+import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 import org.jkarsten.popularmovie.popularmovies.util.NetworkUtil;
 
 import java.io.IOException;
@@ -102,6 +103,10 @@ public class RemoteMovieDataSource implements MovieDataSource  {
         mTopRatedResponseLoader.forceLoad();
     }
 
+    @Override
+    public void getFavoriteMovies(LoadMoviesCallback callback) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public int getTotalPages() {

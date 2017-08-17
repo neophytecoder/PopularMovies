@@ -22,6 +22,7 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
 
     public static final int SORT_BY_POPULAR = 1;
     public static final int SORT_BY_TOP_RATED = 2;
+    public static final int SORT_BY_FAVORITE = 3;
 
     @Inject
     public MovieListPresenter(MovieListContract.View movieListView, MovieDataSource repository) {
@@ -37,14 +38,17 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
         currentSort = mView.readSortingState();
         if (currentSort == MovieListPresenter.SORT_BY_POPULAR)
             mRepository.getPopularMovies(this);
-        else
+        else if (currentSort == MovieListPresenter.SORT_BY_TOP_RATED)
             mRepository.getTopRatedMovies(this);
+        else
+            mRepository.getFavoriteMovies(this);
         Log.d(MovieListPresenter.class.getSimpleName(), "started");
     }
 
     @Override
     public void stop() {
         mView.writeSortingState(currentSort);
+
     }
 
     @Override
@@ -78,5 +82,12 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
         currentSort = SORT_BY_TOP_RATED;
         mView.showLoading();
         mRepository.getTopRatedMovies(this);
+    }
+
+    @Override
+    public void onFavoriteSelected() {
+        currentSort = SORT_BY_FAVORITE;
+        mView.showLoading();
+        mRepository.getFavoriteMovies(this);
     }
 }

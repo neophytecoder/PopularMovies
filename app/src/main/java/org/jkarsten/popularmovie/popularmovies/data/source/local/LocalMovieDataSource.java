@@ -13,6 +13,7 @@ import android.support.v4.content.Loader;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieDBUtils;
+import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 /**
  * Created by juankarsten on 7/16/17.
@@ -22,8 +23,9 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
     private LoaderManager mLoaderManager;
     Context mContext;
 
-    public static final int LOADER_POPULAR = 2345;
-    public static final int LOADER_TOP_RATED = 2346;
+    private static final int LOADER_POPULAR = 2345;
+    private static final int LOADER_TOP_RATED = 2346;
+    private static final int LOADER_FAVORITE = 32424323;
 
     public LocalMovieDataSource(LoaderManager loaderManager, Context context) {
         mLoaderManager = loaderManager;
@@ -52,6 +54,13 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
         LoaderTopRatedResponseCallback loaderTopRatedResponseCallback = new LoaderTopRatedResponseCallback(mContext);
         loaderTopRatedResponseCallback.setLoadTopRatedResponseCallback(callback);
         mLoaderManager.initLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
+    }
+
+    @Override
+    public void getFavoriteMovies(LoadMoviesCallback callback) {
+        LoaderFavoriteResponseCallback loaderFavoriteResponseCallback = new LoaderFavoriteResponseCallback(mContext);
+        loaderFavoriteResponseCallback.setCallback(callback);
+        mLoaderManager.initLoader(LOADER_FAVORITE, null, loaderFavoriteResponseCallback);
     }
 
     @Override

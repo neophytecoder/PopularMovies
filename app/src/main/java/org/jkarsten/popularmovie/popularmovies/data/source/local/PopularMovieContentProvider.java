@@ -22,6 +22,7 @@ public class PopularMovieContentProvider extends ContentProvider {
     public static final int MOVIE_TASKS_WITH_ID = 101;
     public static final int MOVIE_TASKS_POPULAR = 102;
     public static final int MOVIE_TASKS_TOP_RATED = 103;
+    public static final int MOVIE_TASKS_FAVORITE = 104;
 
 
 
@@ -34,6 +35,7 @@ public class PopularMovieContentProvider extends ContentProvider {
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_POPULAR, MOVIE_TASKS_POPULAR);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_TOP_RATED, MOVIE_TASKS_TOP_RATED);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/#", MOVIE_TASKS_WITH_ID);
+        uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_FAVORITE, MOVIE_TASKS_FAVORITE);
 
         return uriMatcher;
     }
@@ -72,6 +74,10 @@ public class PopularMovieContentProvider extends ContentProvider {
             case MOVIE_TASKS_TOP_RATED:
                 selection = PopularMovieContract.MovieEntry.COLUMN_MOVIE_TYPE + "=?";
                 selectionArgs = new String[]{PopularMovieContract.MovieEntry.MOVIE_TYPE_TOP_RATED+""};
+                break;
+            case MOVIE_TASKS_FAVORITE:
+                selection = PopularMovieContract.MovieEntry.COLUMN_FAVORITE + "=?";
+                selectionArgs = new String[]{1+""};
                 break;
             default:
                 throw new UnsupportedOperationException();

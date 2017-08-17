@@ -3,6 +3,7 @@ package org.jkarsten.popularmovie.popularmovies.data.source;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
+import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 /**
  * Created by juankarsten on 6/24/17.
@@ -33,6 +34,12 @@ public class MovieListRepository implements MovieDataSource,
         mLoadMoviesCallback = callback;
         mLocalDataSource.getTopRatedResponse(currentPage, this);
         //mRemoteDataSource.getTopRatedResponse(currentPage, this);
+    }
+
+    @Override
+    public void getFavoriteMovies(LoadMoviesCallback callback) {
+        mLoadMoviesCallback = callback;
+        mLocalDataSource.getFavoriteMovies(callback);
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.jkarsten.popularmovie.popularmovies.data.source;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
+import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 import java.util.List;
 
@@ -11,6 +12,15 @@ import java.util.List;
  */
 
 public interface MovieDataSource {
+    void getFavoriteMovies(LoadMoviesCallback callback);
+    void getPopularMovies(LoadMoviesCallback callback);
+    void getTopRatedMovies(LoadMoviesCallback callback);
+    void getPopularResponse(int page, LoadPopularResponseCallback callback);
+    void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback);
+    void saveMovie(Movie movie);
+    int getTotalPages();
+    int getTotalResults();
+
     interface LoadMoviesCallback {
         void onLoadedMovies(List<Movie> movies);
         void onDataNotAvailable();
@@ -25,13 +35,4 @@ public interface MovieDataSource {
         void onLoadTopRatedResponse(TopRatedResponse popularResponse);
         void onDataNotAvailable();
     }
-
-     void getPopularMovies(LoadMoviesCallback callback);
-     void getTopRatedMovies(LoadMoviesCallback callback);
-     void getPopularResponse(int page, LoadPopularResponseCallback callback);
-     void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback);
-    void saveMovie(Movie movie);
-     int getTotalPages();
-     int getTotalResults();
-
 }
