@@ -97,7 +97,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         mTrailersRV = (RecyclerView) findViewById(R.id.trailers_recyclerview);
         mTrailersAdapter = new TrailersAdapter(this, this);
         mTrailersRV.setAdapter(mTrailersAdapter);
-        mTrailersRV.setLayoutManager(new LinearLayoutManager(this));
+        mTrailersRV.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         mReviewsRV = (RecyclerView) findViewById(R.id.reviews_recyclerview);
         mReviewAdapter = new ReviewAdapter(this);

@@ -44,5 +44,7 @@ public class NetworkUtil {
         return uri;
     }
 
-
+    public static Uri buildYoutubeThumbnail(String key) {
+        return Uri.parse("http://img.youtube.com/vi/"+key+"/0.jpg");
+    }
 }

@@ -201,10 +201,18 @@
                             android:text="@string/trailers"
                             android:textSize="36sp" />
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/trailers_recyclerview"
+
+                        <HorizontalScrollView
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"/>
+                            android:layout_height="wrap_content"
+                            android:fillViewport="true"
+                            android:measureAllChildren="true"
+                            android:scrollbars="none">
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/trailers_recyclerview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"/>
+                        </HorizontalScrollView>
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>

@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Trailer;
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListAdapter;
+import org.jkarsten.popularmovie.popularmovies.util.NetworkUtil;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -58,14 +61,10 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         Log.d(TrailersAdapter.class.getSimpleName(), "getItemCount");
         if (mTrailers==null)
             return 0;
-        if (mTrailers.size() > 4) {
-            return 4;
-        }
         return mTrailers.size();
     }
 
     class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView trailerTV;
         ImageView playerIV;
         ImageView bottomLineIV;
         View mItemView;
@@ -73,7 +72,6 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         public TrailerViewHolder(View itemView) {
             super(itemView);
             mItemView = itemView;
-            trailerTV = (TextView) itemView.findViewById(R.id.trailer_textview);
             playerIV = (ImageView) itemView.findViewById(R.id.play_imageview);
             bottomLineIV = (ImageView) itemView.findViewById(R.id.bottom_row_line);
         }
@@ -82,7 +80,11 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
             if (position == 3) {
                 bottomLineIV.setVisibility(View.GONE);
             }
-            trailerTV.setText("Trailer " + (position+1));
+            Uri thumbnailUri = NetworkUtil.buildYoutubeThumbnail(trailer.getKey());
+            Picasso.with(mContext)
+                    .load(thumbnailUri)
+                    .into(playerIV);
+            //http://img.youtube.com/vi/ngSV1NwHwU8/0.jpg
             mItemView.setOnClickListener(this);
         }
 

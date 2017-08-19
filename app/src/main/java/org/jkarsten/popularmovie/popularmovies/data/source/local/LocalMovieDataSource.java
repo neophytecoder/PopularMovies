@@ -21,11 +21,16 @@ import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 public class LocalMovieDataSource implements MovieDataSource, LoaderManager.LoaderCallbacks<Cursor> {
     private LoaderManager mLoaderManager;
-    Context mContext;
+    private Context mContext;
+    private Loader<Cursor> popularLoader;
+    private Loader<Cursor> topRatedLoader;
+    private Loader<Cursor> favoriteLoader;
 
     private static final int LOADER_POPULAR = 2345;
     private static final int LOADER_TOP_RATED = 2346;
     private static final int LOADER_FAVORITE = 32424323;
+
+
 
     public LocalMovieDataSource(LoaderManager loaderManager, Context context) {
         mLoaderManager = loaderManager;
@@ -46,21 +51,30 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
     public void getPopularResponse(int page, LoadPopularResponseCallback callback) {
         LoaderPopularResponseCallback loaderPopularResponseCallback = new LoaderPopularResponseCallback(mContext);
         loaderPopularResponseCallback.setLoadPopularResponseCallback(callback);
-        mLoaderManager.initLoader(LOADER_POPULAR, null, loaderPopularResponseCallback);
+        if (popularLoader == null)
+            popularLoader = mLoaderManager.initLoader(LOADER_POPULAR, null, loaderPopularResponseCallback);
+        else
+            popularLoader = mLoaderManager.restartLoader(LOADER_POPULAR, null, loaderPopularResponseCallback);
     }
 
     @Override
     public void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback) {
         LoaderTopRatedResponseCallback loaderTopRatedResponseCallback = new LoaderTopRatedResponseCallback(mContext);
         loaderTopRatedResponseCallback.setLoadTopRatedResponseCallback(callback);
-        mLoaderManager.initLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
+        if (topRatedLoader == null)
+            topRatedLoader = mLoaderManager.initLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
+        else
+            topRatedLoader = mLoaderManager.restartLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
     }
 
     @Override
     public void getFavoriteMovies(LoadMoviesCallback callback) {
         LoaderFavoriteResponseCallback loaderFavoriteResponseCallback = new LoaderFavoriteResponseCallback(mContext);
         loaderFavoriteResponseCallback.setCallback(callback);
-        mLoaderManager.initLoader(LOADER_FAVORITE, null, loaderFavoriteResponseCallback);
+        if (favoriteLoader == null)
+            favoriteLoader = mLoaderManager.initLoader(LOADER_FAVORITE, null, loaderFavoriteResponseCallback);
+        else
+            favoriteLoader = mLoaderManager.restartLoader(LOADER_FAVORITE, null, loaderFavoriteResponseCallback);
     }
 
     @Override
