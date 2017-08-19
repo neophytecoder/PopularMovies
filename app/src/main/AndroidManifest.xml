@@ -4,38 +4,41 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
-
     <application
         android:name=".PopularMovieApplication"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="true">
+        android:theme="@style/AppTheme">
 
-        <activity android:name=".movielist.MainActivity"
-            android:launchMode="singleTop">
+        <activity android:name=".movielist.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".movie.MovieActivity" android:parentActivityName=".movielist.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".movielist.MainActivity"/>
+        <activity
+            android:name=".movie.MovieActivity"
+            android:parentActivityName=".movielist.MainActivity">
+                <meta-data
+                 android:name="android.support.PARENT_ACTIVITY"
+                 android:value=".movielist.MainActivity" />
         </activity>
 
         <provider
-            android:authorities="org.jkarsten.popularmovie.popularmovies.data.source.local"
             android:name=".data.source.local.PopularMovieContentProvider"
-            android:exported="false"/>
+            android:authorities="org.jkarsten.popularmovie.popularmovies.data.source.local"
+            android:exported="false" />
 
-        <service android:name=".data.sync.PopularMovieService"
-            android:exported="false"/>
+        <service
+            android:name=".data.sync.PopularMovieService"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>
