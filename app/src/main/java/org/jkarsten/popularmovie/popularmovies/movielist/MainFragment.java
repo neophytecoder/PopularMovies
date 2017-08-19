@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +16,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.jkarsten.popularmovie.popularmovies.OnMovieSelected;
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieSyncUtils;
 import org.jkarsten.popularmovie.popularmovies.movie.MovieActivity;
-import org.jkarsten.popularmovie.popularmovies.movie.MovieFragment;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.util.List;
@@ -38,9 +37,11 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     TextView noInternetTextView;
     LinearLayout loadingLayout;
 
+    OnMovieSelected mOnMovieSelectedCallback;
+    boolean mDualPane;
+
     public static final String MOVIE = "movie";
     public static final String PREFERENCE_SORT_STATE = "sort state";
-
 
     @Nullable
     @Override
@@ -52,12 +53,9 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
 
         createRecyclerView();
 
-
-        AppCompatActivity activity = (AppCompatActivity) getContext();
-
         DaggerMovieListComponent.builder()
                 .movieListModule(new MovieListModule(this))
-                .movieDataModule(new MovieDataModule(getContext(), activity.getSupportLoaderManager()))
+                .movieDataModule(new MovieDataModule(getContext(), getActivity().getSupportLoaderManager()))
                 .build()
                 .inject(this);
 
@@ -69,6 +67,18 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     @Override
     public void onStart() {
         super.onStart();
+
+        try {
+            if (getActivity() != null) {
+                MainActivity activity = (MainActivity) getActivity();
+                mDualPane = activity.isDualPane();
+                mOnMovieSelectedCallback = (OnMovieSelected) getActivity();
+            }
+        } catch (ClassCastException exception) {
+            mDualPane = false;
+            Log.d(MainFragment.class.getSimpleName(), "single pane");
+        }
+
         mPresenter.start();
     }
 
@@ -101,11 +111,6 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
         return super.onOptionsItemSelected(item);
     }
 
-
-
-
-
-
     @Override
     public void setPresenter(MovieListContract.Presenter presenter) {
 
@@ -115,6 +120,9 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     public void showMovies(List<Movie> movies) {
         noInternetTextView.setVisibility(View.GONE);
         mMovieListAdapter.setMovies(movies);
+
+        if (movies != null && movies.size()>0)
+            mOnMovieSelectedCallback.onSelected(movies.get(0), true);
     }
 
     @Override
@@ -124,9 +132,13 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
 
     @Override
     public void goToMovieActivity(Movie movie) {
-        Intent intent = new Intent(getContext(), MovieActivity.class);
-        intent.putExtra(MOVIE, movie);
-        startActivity(intent);
+        if (!mDualPane) {
+            Intent intent = new Intent(getContext(), MovieActivity.class);
+            intent.putExtra(MOVIE, movie);
+            startActivity(intent);
+        } else {
+            mOnMovieSelectedCallback.onSelected(movie, false);
+        }
     }
 
     @Override
@@ -163,4 +175,5 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     public void hideLoading() {
         loadingLayout.setVisibility(View.GONE);
     }
+
 }

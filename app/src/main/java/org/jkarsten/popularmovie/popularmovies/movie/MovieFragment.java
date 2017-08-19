@@ -22,6 +22,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import org.jkarsten.popularmovie.popularmovies.OnMovieSelected;
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.Review;
@@ -30,6 +31,7 @@ import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.databinding.FragmentMovieBinding;
 import org.jkarsten.popularmovie.popularmovies.movie.adapters.ReviewAdapter;
 import org.jkarsten.popularmovie.popularmovies.movie.adapters.TrailersAdapter;
+import org.jkarsten.popularmovie.popularmovies.movielist.MainActivity;
 import org.jkarsten.popularmovie.popularmovies.movielist.MainFragment;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
@@ -38,7 +40,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class MovieFragment extends Fragment implements MovieContract.View,
-        TrailersAdapter.OnTrailerClickListener {
+        TrailersAdapter.OnTrailerClickListener, OnMovieSelected{
 
     public static final String MOVIE_KEY = "movie";
 
@@ -46,7 +48,6 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     @Inject
     MovieContract.Presenter mPresenter;
     FragmentMovieBinding mMovieBinding;
-
 
     Bundle mSavedInstanceState;
 
@@ -59,12 +60,15 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     TrailersAdapter mTrailersAdapter;
     ReviewAdapter mReviewAdapter;
 
+    boolean mDualPane = false;
+    boolean mInitial = true;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //mRootView = inflater.inflate(R.layout.fragment_movie, container, false);
         mMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false);
         mRootView = mMovieBinding.getRoot();
+
 
         getAllViews();
 
@@ -84,6 +88,15 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     @Override
     public void onStart() {
         super.onStart();
+
+        try {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mDualPane = mainActivity.isDualPane();
+        } catch (ClassCastException exception) {
+            Log.d(MovieFragment.class.getSimpleName(), "single pane");
+        }
+
+
         mPresenter.start();
     }
 
@@ -94,7 +107,6 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     }
 
     private void getAllViews() {
-
         mTrailersRV = (RecyclerView) mRootView.findViewById(R.id.trailers_recyclerview);
         mTrailersAdapter = new TrailersAdapter(getContext(), this);
         mTrailersRV.setAdapter(mTrailersAdapter);
@@ -143,11 +155,18 @@ public class MovieFragment extends Fragment implements MovieContract.View,
 
     @Override
     public Movie getMovie() {
-        if (mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
-            mMovie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
+        if (!mDualPane) {
+            if (mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
+                mMovie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
+            } else  {
+                Intent myIntent = getActivity().getIntent();
+                mMovie =  (Movie) myIntent.getSerializableExtra(MainFragment.MOVIE);
+            }
         } else {
-            Intent myIntent = getActivity().getIntent();
-            mMovie =  (Movie) myIntent.getSerializableExtra(MainFragment.MOVIE);
+            if (mInitial && mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
+                    mMovie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
+            }
+
         }
 
         return mMovie;
@@ -194,6 +213,18 @@ public class MovieFragment extends Fragment implements MovieContract.View,
             mFloatingActionButton.setImageResource(R.drawable.pentagon_made_of_stars);
         } else {
             mFloatingActionButton.setImageResource(R.drawable.favourite_star);
+        }
+    }
+
+    @Override
+    public void onSelected(Movie movie, boolean initial) {
+        mInitial = initial;
+        if (mDualPane && !initial) {
+            mMovie = movie;
+            mPresenter.start();
+        } else if (mDualPane && initial && (mSavedInstanceState == null || !mSavedInstanceState.containsKey(MOVIE_KEY) )) {
+            mMovie = movie;
+            mPresenter.start();
         }
     }
 }

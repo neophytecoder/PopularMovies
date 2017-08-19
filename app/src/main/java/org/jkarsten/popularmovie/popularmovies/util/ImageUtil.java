@@ -2,9 +2,11 @@ package org.jkarsten.popularmovie.popularmovies.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.content.res.Configuration;
 
+import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListAdapter;
 
 /**
@@ -52,16 +54,25 @@ public class ImageUtil {
             return buildImageUri(XXXHDPI_SIZE, imagePath);
     }
 
+//    public static int getColumns(Context context) {
+//        int orientation = context.getResources().getConfiguration().orientation;
+//        switch (orientation) {
+//            case Configuration.ORIENTATION_LANDSCAPE:
+//                return 5;
+//            case Configuration.ORIENTATION_PORTRAIT:
+//                return 3;
+//            default:
+//                return 3;
+//        }
+//    }
+
     public static int getColumns(Context context) {
-        int orientation = context.getResources().getConfiguration().orientation;
-        switch (orientation) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                return 5;
-            case Configuration.ORIENTATION_PORTRAIT:
-                return 3;
-            default:
-                return 3;
-        }
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = context.getResources().getInteger(R.integer.scaling_factor);
+
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        return noOfColumns;
     }
 
     public static int getDensity(Context context) {

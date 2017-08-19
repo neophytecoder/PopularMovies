@@ -53,7 +53,7 @@ public class MovieViewModel extends BaseObservable{
 
     @BindingAdapter({"imagePath"})
     public static void setImagePath(ImageView view, String imagePath) {
-        String path = ImageUtil.buildImageUri(imagePath, view.getContext());
-        Picasso.with(view.getContext()).load(path).into(view);
+        //String path = ImageUtil.buildImageUri(imagePath, view.getContext());
+        //Picasso.with(view.getContext()).load(path).into(view);
     }
 }
