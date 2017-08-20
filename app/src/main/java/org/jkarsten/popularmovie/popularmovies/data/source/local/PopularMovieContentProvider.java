@@ -50,10 +50,11 @@ public class PopularMovieContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final SQLiteDatabase database = mDBHelper.getReadableDatabase();
 
-        String limit = uri.getQueryParameter(PopularMovieContract.LIMIT);
-        if (limit == null) {
-            limit = PopularMovieContract.DEFAULT_LIMIT;
+        String offset = uri.getQueryParameter(PopularMovieContract.PAGE);
+        if (offset == null) {
+            offset =  "1";
         }
+        offset += "," + PopularMovieContract.DEFAULT_LIMIT;
 
         Cursor cursor = null;
         int match = sUriMatcher.match(uri);
@@ -84,7 +85,7 @@ public class PopularMovieContentProvider extends ContentProvider {
         }
 
         cursor = database.query(PopularMovieContract.MovieEntry.TABLE_NAME, projection,
-                selection, selectionArgs, null, null, sortOrder, limit);
+                selection, selectionArgs, null, null, sortOrder, offset);
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;

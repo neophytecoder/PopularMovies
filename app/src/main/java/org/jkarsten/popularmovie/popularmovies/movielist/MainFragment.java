@@ -23,6 +23,7 @@ import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieSyncUtils;
 import org.jkarsten.popularmovie.popularmovies.movie.MovieActivity;
+import org.jkarsten.popularmovie.popularmovies.ui.EndlessRecyclerViewScrollListener;
 import org.jkarsten.popularmovie.popularmovies.util.ImageUtil;
 
 import java.util.List;
@@ -34,9 +35,11 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
 
     View mRootView;
     RecyclerView mRecyclerView;
+    GridLayoutManager mLayoutManager;
     MovieListAdapter mMovieListAdapter;
     TextView noInternetTextView;
     LinearLayout loadingLayout;
+    RecyclerView.OnScrollListener mOnScrollListener;
 
     public static final String MOVIE = "movie";
     public static final String PREFERENCE_SORT_STATE = "sort state";
@@ -104,9 +107,9 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
         mRecyclerView = (RecyclerView) mRootView.findViewById(R.id.movies_recyclerview);
 
         int columns = ImageUtil.getColumns(getContext());
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), columns);
+        mLayoutManager = new GridLayoutManager(getContext(), columns);
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         mMovieListAdapter = new MovieListAdapter(getContext(), this);
         mRecyclerView.setAdapter(mMovieListAdapter);
@@ -138,6 +141,17 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     public void showMovies(List<Movie> movies) {
         noInternetTextView.setVisibility(View.GONE);
         mMovieListAdapter.setMovies(movies);
+
+        if (mOnScrollListener == null) {
+            mOnScrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    mPresenter.onLoadMore(page, totalItemsCount, getExpectedSize());
+                }
+            };
+            mRecyclerView.clearOnScrollListeners();
+            mRecyclerView.addOnScrollListener(mOnScrollListener);
+        }
     }
 
     @Override

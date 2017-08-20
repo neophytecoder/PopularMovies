@@ -37,7 +37,8 @@ public class PopularMovieContract {
 
 
     public static final String LIMIT = "limit";
-    public static final String DEFAULT_LIMIT = "20";
+    public static final int DEFAULT_LIMIT = 19;
+    public static final String PAGE = "page";
 
     private PopularMovieContract() {
         //no instance

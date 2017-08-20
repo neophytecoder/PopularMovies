@@ -24,6 +24,7 @@ import java.util.List;
 public class LoaderTopRatedResponseCallback implements LoaderManager.LoaderCallbacks<Cursor>{
     private Context mContext;
     private MovieDataSource.LoadTopRatedResponseCallback mloadTopRatedResponseCallback;
+    private int mPage;
 
     public LoaderTopRatedResponseCallback(Context context) {
         mContext = context;
@@ -36,8 +37,9 @@ public class LoaderTopRatedResponseCallback implements LoaderManager.LoaderCallb
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri myUri = PopularMovieContract.CONTENT_URI_MOVIES_TOP_RATED;
-        myUri = myUri.buildUpon().appendQueryParameter(PopularMovieContract.LIMIT,
-                PopularMovieContract.DEFAULT_LIMIT).build();
+        int offset = PopularMovieContract.DEFAULT_LIMIT * mPage + 1;
+        myUri = myUri.buildUpon().appendQueryParameter(PopularMovieContract.PAGE,
+                offset + "").build();
         return new CursorLoader(mContext, myUri, null,
                 null, null, null);
     }
@@ -57,5 +59,9 @@ public class LoaderTopRatedResponseCallback implements LoaderManager.LoaderCallb
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    public void setPage(int page) {
+        this.mPage = page;
     }
 }

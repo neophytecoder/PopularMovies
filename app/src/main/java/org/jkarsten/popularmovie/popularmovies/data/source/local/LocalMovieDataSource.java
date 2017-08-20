@@ -30,6 +30,8 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
     private static final int LOADER_TOP_RATED = 2346;
     private static final int LOADER_FAVORITE = 32424323;
 
+    LoaderPopularResponseCallback mLoaderPopularResponseCallback;
+    LoaderTopRatedResponseCallback mLoaderTopRatedResponseCallback;
 
 
     public LocalMovieDataSource(LoaderManager loaderManager, Context context) {
@@ -49,22 +51,25 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
 
     @Override
     public void getPopularResponse(int page, LoadPopularResponseCallback callback) {
-        LoaderPopularResponseCallback loaderPopularResponseCallback = new LoaderPopularResponseCallback(mContext);
-        loaderPopularResponseCallback.setLoadPopularResponseCallback(callback);
+        if (mLoaderPopularResponseCallback == null)
+            mLoaderPopularResponseCallback = new LoaderPopularResponseCallback(mContext);
+        mLoaderPopularResponseCallback.setLoadPopularResponseCallback(callback);
+        mLoaderPopularResponseCallback.setPage(page);
         if (popularLoader == null)
-            popularLoader = mLoaderManager.initLoader(LOADER_POPULAR, null, loaderPopularResponseCallback);
+            popularLoader = mLoaderManager.initLoader(LOADER_POPULAR, null, mLoaderPopularResponseCallback);
         else
-            popularLoader = mLoaderManager.restartLoader(LOADER_POPULAR, null, loaderPopularResponseCallback);
+            popularLoader = mLoaderManager.restartLoader(LOADER_POPULAR, null, mLoaderPopularResponseCallback);
     }
 
     @Override
     public void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback) {
-        LoaderTopRatedResponseCallback loaderTopRatedResponseCallback = new LoaderTopRatedResponseCallback(mContext);
-        loaderTopRatedResponseCallback.setLoadTopRatedResponseCallback(callback);
+        mLoaderTopRatedResponseCallback = new LoaderTopRatedResponseCallback(mContext);
+        mLoaderTopRatedResponseCallback.setLoadTopRatedResponseCallback(callback);
+        mLoaderTopRatedResponseCallback.setPage(page);
         if (topRatedLoader == null)
-            topRatedLoader = mLoaderManager.initLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
+            topRatedLoader = mLoaderManager.initLoader(LOADER_TOP_RATED, null, mLoaderTopRatedResponseCallback);
         else
-            topRatedLoader = mLoaderManager.restartLoader(LOADER_TOP_RATED, null, loaderTopRatedResponseCallback);
+            topRatedLoader = mLoaderManager.restartLoader(LOADER_TOP_RATED, null, mLoaderTopRatedResponseCallback);
     }
 
     @Override

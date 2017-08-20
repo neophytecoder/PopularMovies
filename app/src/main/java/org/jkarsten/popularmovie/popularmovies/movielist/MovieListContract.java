@@ -32,5 +32,6 @@ public interface MovieListContract {
         void onTopRatedSelected();
         void onFavoriteSelected();
 
+        void onLoadMore(int page, int totalItemsCount, int expectedItemCount);
     }
 }

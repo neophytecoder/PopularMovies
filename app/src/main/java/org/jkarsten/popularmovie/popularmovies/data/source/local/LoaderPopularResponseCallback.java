@@ -23,20 +23,28 @@ import java.util.List;
 public class LoaderPopularResponseCallback implements LoaderManager.LoaderCallbacks<Cursor>{
     private Context mContext;
     private MovieDataSource.LoadPopularResponseCallback mloadPopularResponseCallback;
+    private int mPage;
 
     public LoaderPopularResponseCallback(Context context) {
         mContext = context;
+        mPage = 0;
     }
 
     public void setLoadPopularResponseCallback(MovieDataSource.LoadPopularResponseCallback loadPopularResponseCallback) {
         this.mloadPopularResponseCallback = loadPopularResponseCallback;
     }
 
+
+    public void setPage(int page) {
+        this.mPage = page;
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Uri myUri = PopularMovieContract.CONTENT_URI_MOVIES_POPULAR;
-        myUri = myUri.buildUpon().appendQueryParameter(PopularMovieContract.LIMIT,
-                PopularMovieContract.DEFAULT_LIMIT).build();
+        int offset = PopularMovieContract.DEFAULT_LIMIT * mPage + 1;
+        myUri = myUri.buildUpon().appendQueryParameter(PopularMovieContract.PAGE,
+                  offset + "").build();
         return new CursorLoader(mContext, myUri, null,
                 null, null, null);
     }

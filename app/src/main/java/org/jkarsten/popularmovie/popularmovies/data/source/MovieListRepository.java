@@ -1,5 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.data.source;
 
+import android.util.Log;
+
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
@@ -12,9 +14,9 @@ import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 public class MovieListRepository implements MovieDataSource,
         MovieDataSource.LoadPopularResponseCallback, MovieDataSource.LoadTopRatedResponseCallback {
+    private static final int PAGE_ZERO = 0;
     private MovieDataSource mRemoteDataSource;
     private MovieDataSource mLocalDataSource;
-    private int currentPage = 1;
     private LoadMoviesCallback mLoadMoviesCallback;
 
     public MovieListRepository(MovieDataSource remoteDataSource, MovieDataSource localDataSource) {
@@ -26,15 +28,13 @@ public class MovieListRepository implements MovieDataSource,
     @Override
     public void getPopularMovies(LoadMoviesCallback callback) {
         mLoadMoviesCallback = callback;
-        //mRemoteDataSource.getPopularResponse(currentPage, this);
-        mLocalDataSource.getPopularResponse(currentPage, this);
+        mLocalDataSource.getPopularResponse(PAGE_ZERO, this);
     }
 
     @Override
     public void getTopRatedMovies(LoadMoviesCallback callback) {
         mLoadMoviesCallback = callback;
-        mLocalDataSource.getTopRatedResponse(currentPage, this);
-        //mRemoteDataSource.getTopRatedResponse(currentPage, this);
+        mLocalDataSource.getTopRatedResponse(PAGE_ZERO, this);
     }
 
     @Override
@@ -44,14 +44,46 @@ public class MovieListRepository implements MovieDataSource,
     }
 
     @Override
-    public void getPopularResponse(int page, LoadPopularResponseCallback callback) {
-        throw new UnsupportedOperationException();
+    public void getPopularResponse(final int page, final LoadPopularResponseCallback callback) {
+        mLocalDataSource.getPopularResponse(page, new LoadPopularResponseCallback() {
+            @Override
+            public void onLoadPopularResponse(PopularResponse popularResponse) {
+                if (popularResponse == null || popularResponse.getResults() == null
+                        || popularResponse.getResults().size() == 0) {
+                    Log.d(MovieListRepository.class.getSimpleName(), "get internet");
+                    mRemoteDataSource.getPopularResponse(page, callback);
+                } else {
+                    callback.onLoadPopularResponse(popularResponse);
+                }
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+        });
     }
 
 
     @Override
-    public void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback) {
-        throw new UnsupportedOperationException();
+    public void getTopRatedResponse(final int page, final LoadTopRatedResponseCallback callback) {
+        mLocalDataSource.getTopRatedResponse(page, new LoadTopRatedResponseCallback() {
+            @Override
+            public void onLoadTopRatedResponse(TopRatedResponse topRatedResponse) {
+                if (topRatedResponse == null || topRatedResponse.getResults() == null
+                        || topRatedResponse.getResults().size() == 0) {
+                    Log.d(MovieListRepository.class.getSimpleName(), "get internet");
+                    mRemoteDataSource.getTopRatedResponse(page, callback);
+                } else {
+                    callback.onLoadTopRatedResponse(topRatedResponse);
+                }
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+        });
     }
 
     @Override

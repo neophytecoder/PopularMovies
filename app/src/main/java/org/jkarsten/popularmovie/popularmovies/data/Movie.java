@@ -205,4 +205,9 @@ public class Movie implements Serializable {
                 ", columnId=" + columnId +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return ((Movie) obj).getId() == this.id;
+    }
 }
