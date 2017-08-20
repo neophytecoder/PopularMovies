@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.jkarsten.popularmovie.popularmovies.OnMovieSelected;
 import org.jkarsten.popularmovie.popularmovies.R;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataModule;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieSyncUtils;
 import org.jkarsten.popularmovie.popularmovies.movie.MovieActivity;
@@ -36,9 +37,6 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     MovieListAdapter mMovieListAdapter;
     TextView noInternetTextView;
     LinearLayout loadingLayout;
-
-    OnMovieSelected mOnMovieSelectedCallback;
-    boolean mDualPane;
 
     public static final String MOVIE = "movie";
     public static final String PREFERENCE_SORT_STATE = "sort state";
@@ -67,19 +65,39 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     @Override
     public void onStart() {
         super.onStart();
+        mPresenter.start();
+    }
 
+    @Override
+    public boolean isDualPane() {
+        boolean dualPane = false;
         try {
             if (getActivity() != null) {
                 MainActivity activity = (MainActivity) getActivity();
-                mDualPane = activity.isDualPane();
-                mOnMovieSelectedCallback = (OnMovieSelected) getActivity();
+                dualPane = activity.isDualPane();
             }
-        } catch (ClassCastException exception) {
-            mDualPane = false;
+        } catch (Exception exception) {
             Log.d(MainFragment.class.getSimpleName(), "single pane");
+            dualPane = false;
+        } finally {
+            return dualPane;
         }
+    }
 
-        mPresenter.start();
+    @Override
+    public OnMovieSelected getOnMovieSelected() {
+        OnMovieSelected onMovieSelected = null;
+        try {
+            if (getActivity() != null) {
+                MainActivity activity = (MainActivity) getActivity();
+                if (activity.isDualPane())
+                    onMovieSelected = (OnMovieSelected) activity;
+            }
+        } catch (Exception exception) {
+            Log.d(MainFragment.class.getSimpleName(), "single pane");
+        } finally {
+            return onMovieSelected;
+        }
     }
 
     private void createRecyclerView() {
@@ -120,9 +138,6 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     public void showMovies(List<Movie> movies) {
         noInternetTextView.setVisibility(View.GONE);
         mMovieListAdapter.setMovies(movies);
-
-        if (movies != null && movies.size()>0)
-            mOnMovieSelectedCallback.onSelected(movies.get(0), true);
     }
 
     @Override
@@ -132,19 +147,16 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
 
     @Override
     public void goToMovieActivity(Movie movie) {
-        if (!mDualPane) {
-            Intent intent = new Intent(getContext(), MovieActivity.class);
-            intent.putExtra(MOVIE, movie);
-            startActivity(intent);
-        } else {
-            mOnMovieSelectedCallback.onSelected(movie, false);
-        }
+        Intent intent = new Intent(getContext(), MovieActivity.class);
+        intent.putExtra(MOVIE, movie);
+        startActivity(intent);
+
     }
 
     @Override
     public int readSortingState() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return sharedPreferences.getInt(PREFERENCE_SORT_STATE, MovieListPresenter.SORT_BY_POPULAR);
+        return sharedPreferences.getInt(PREFERENCE_SORT_STATE, MovieSortType.SORT_BY_POPULAR);
     }
 
     @Override

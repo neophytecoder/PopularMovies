@@ -21,8 +21,12 @@ public interface MovieDataSource {
     int getTotalPages();
     int getTotalResults();
 
+    public static final int SORT_BY_POPULAR = 1;
+    public static final int SORT_BY_TOP_RATED = 2;
+    public static final int SORT_BY_FAVORITE = 3;
+
     interface LoadMoviesCallback {
-        void onLoadedMovies(List<Movie> movies);
+        void onLoadedMovies(List<Movie> movies, int type);
         void onDataNotAvailable();
     }
 

@@ -1,6 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.data.source;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
@@ -65,13 +66,13 @@ public class MovieListRepository implements MovieDataSource,
 
     @Override
     public void onLoadPopularResponse(PopularResponse popularResponse) {
-        mLoadMoviesCallback.onLoadedMovies(popularResponse.getResults());
+        mLoadMoviesCallback.onLoadedMovies(popularResponse.getResults(), MovieSortType.SORT_BY_POPULAR);
     }
 
 
     @Override
     public void onLoadTopRatedResponse(TopRatedResponse topRatedResponse) {
-        mLoadMoviesCallback.onLoadedMovies(topRatedResponse.getResults());
+        mLoadMoviesCallback.onLoadedMovies(topRatedResponse.getResults(), MovieSortType.SORT_BY_TOP_RATED);
     }
 
     @Override

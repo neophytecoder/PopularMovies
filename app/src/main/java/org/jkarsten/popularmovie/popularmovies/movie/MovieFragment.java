@@ -60,8 +60,8 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     TrailersAdapter mTrailersAdapter;
     ReviewAdapter mReviewAdapter;
 
-    boolean mDualPane = false;
-    boolean mInitial = true;
+//    boolean mDualPane = false;
+//    boolean mInitial = true;
 
     @Nullable
     @Override
@@ -88,16 +88,21 @@ public class MovieFragment extends Fragment implements MovieContract.View,
     @Override
     public void onStart() {
         super.onStart();
+        mPresenter.start();
+    }
 
+
+
+    @Override
+    public boolean isDualPane() {
+        boolean dualPane = false;
         try {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mDualPane = mainActivity.isDualPane();
+            dualPane = mainActivity.isDualPane();
         } catch (ClassCastException exception) {
             Log.d(MovieFragment.class.getSimpleName(), "single pane");
         }
-
-
-        mPresenter.start();
+        return dualPane;
     }
 
     @Override
@@ -155,21 +160,16 @@ public class MovieFragment extends Fragment implements MovieContract.View,
 
     @Override
     public Movie getMovie() {
-        if (!mDualPane) {
-            if (mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
-                mMovie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
-            } else  {
-                Intent myIntent = getActivity().getIntent();
-                mMovie =  (Movie) myIntent.getSerializableExtra(MainFragment.MOVIE);
-            }
-        } else {
-            if (mInitial && mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
-                    mMovie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
-            }
-
+        Movie movie = null;
+        if (mSavedInstanceState != null && mSavedInstanceState.containsKey(MOVIE_KEY)) {
+            movie = (Movie) mSavedInstanceState.getSerializable(MOVIE_KEY);
+            mSavedInstanceState = null;
+        } else if (!isDualPane())  {
+            Intent myIntent = getActivity().getIntent();
+            movie =  (Movie) myIntent.getSerializableExtra(MainFragment.MOVIE);
         }
 
-        return mMovie;
+        return movie;
     }
 
 
@@ -218,14 +218,7 @@ public class MovieFragment extends Fragment implements MovieContract.View,
 
     @Override
     public void onSelected(Movie movie, boolean initial) {
-        mInitial = initial;
-        if (mDualPane && !initial) {
-            mMovie = movie;
-            mPresenter.start();
-        } else if (mDualPane && initial && (mSavedInstanceState == null || !mSavedInstanceState.containsKey(MOVIE_KEY) )) {
-            mMovie = movie;
-            mPresenter.start();
-        }
+        mPresenter.onNewMovieSelected(movie, initial);
     }
 }
 

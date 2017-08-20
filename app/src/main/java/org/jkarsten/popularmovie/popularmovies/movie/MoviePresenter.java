@@ -23,6 +23,8 @@ public class MoviePresenter implements MovieContract.Presenter, ReviewSource.Loa
     ReviewSource mReviewRepository;
     TrailerSource mTrailerRepository;
 
+    boolean mDualPane;
+
     public MoviePresenter(MovieContract.View view, MovieDataSource repository,
                           ReviewSource reviewSource, TrailerSource trailerSource) {
         mView = view;
@@ -33,17 +35,25 @@ public class MoviePresenter implements MovieContract.Presenter, ReviewSource.Loa
 
     @Override
     public void start() {
-        mMovie = mView.getMovie();
-        if (mMovie != null) {
-            mView.showMovie(mMovie);
-            mReviewRepository.getReview(mMovie.getId(), 1, this);
-            mTrailerRepository.getTrailers(mMovie.getId(), 1, this);
+        mDualPane = mView.isDualPane();
+
+        Movie movie = mView.getMovie();
+        if (movie == null && mDualPane) {
+            movie = mMovie;
+        }
+
+        if (movie != null) {
+            mView.showMovie(movie);
+            mReviewRepository.getReview(movie.getId(), 1, this);
+            mTrailerRepository.getTrailers(movie.getId(), 1, this);
+
+            mMovie = movie;
         }
     }
 
     @Override
     public void stop() {
-        mRepository.saveMovie(mMovie);
+        saveMovie(mMovie);
     }
 
 
@@ -67,5 +77,21 @@ public class MoviePresenter implements MovieContract.Presenter, ReviewSource.Loa
     @Override
     public void onDataNotAvailable() {
 
+    }
+
+    @Override
+    public void saveMovie(Movie movie) {
+        mRepository.saveMovie(movie);
+    }
+
+    @Override
+    public void onNewMovieSelected(Movie movie, boolean initial) {
+        if (!mDualPane)
+            return;
+        if (!initial) {
+            stop();
+        }
+        mMovie = movie;
+        start();
     }
 }

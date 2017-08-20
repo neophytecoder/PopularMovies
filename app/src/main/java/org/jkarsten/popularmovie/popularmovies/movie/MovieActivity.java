@@ -10,9 +10,6 @@ import android.view.MenuItem;
 import org.jkarsten.popularmovie.popularmovies.R;
 
 public class MovieActivity extends AppCompatActivity {
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,9 +24,9 @@ public class MovieActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
         MovieFragment fragment = (MovieFragment) getSupportFragmentManager().findFragmentById(R.id.detail_fragment);
         fragment.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override

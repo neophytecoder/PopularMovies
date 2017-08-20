@@ -2,6 +2,7 @@ package org.jkarsten.popularmovie.popularmovies.movielist;
 
 import org.jkarsten.popularmovie.popularmovies.BasePresenter;
 import org.jkarsten.popularmovie.popularmovies.BaseView;
+import org.jkarsten.popularmovie.popularmovies.OnMovieSelected;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public interface MovieListContract {
         void writeSortingState(int state);
         void showNoInternet();
 
+        boolean isDualPane();
+        OnMovieSelected getOnMovieSelected();
+
         void showLoading();
         void hideLoading();
     }
@@ -27,5 +31,6 @@ public interface MovieListContract {
         void onPopularSelected();
         void onTopRatedSelected();
         void onFavoriteSelected();
+
     }
 }

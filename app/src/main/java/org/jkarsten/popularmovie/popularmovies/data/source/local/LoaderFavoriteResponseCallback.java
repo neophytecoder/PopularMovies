@@ -8,6 +8,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieDBUtils;
 
@@ -42,7 +43,7 @@ public class LoaderFavoriteResponseCallback implements LoaderManager.LoaderCallb
             Movie movie = PopularMovieDBUtils.cursorToMovie(data);
             movies.add(movie);
         }
-        callback.onLoadedMovies(movies);
+        callback.onLoadedMovies(movies, MovieSortType.SORT_BY_FAVORITE);
     }
 
     @Override

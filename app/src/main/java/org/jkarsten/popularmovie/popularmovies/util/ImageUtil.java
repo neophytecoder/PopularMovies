@@ -54,24 +54,13 @@ public class ImageUtil {
             return buildImageUri(XXXHDPI_SIZE, imagePath);
     }
 
-//    public static int getColumns(Context context) {
-//        int orientation = context.getResources().getConfiguration().orientation;
-//        switch (orientation) {
-//            case Configuration.ORIENTATION_LANDSCAPE:
-//                return 5;
-//            case Configuration.ORIENTATION_PORTRAIT:
-//                return 3;
-//            default:
-//                return 3;
-//        }
-//    }
-
     public static int getColumns(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         int scalingFactor = context.getResources().getInteger(R.integer.scaling_factor);
 
         int noOfColumns = (int) (dpWidth / scalingFactor);
+        noOfColumns = (noOfColumns < 2)? 2 : noOfColumns;
         return noOfColumns;
     }
 
