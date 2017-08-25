@@ -20,7 +20,14 @@ import org.jkarsten.popularmovie.popularmovies.util.NetworkUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -120,6 +127,32 @@ public class RemoteMovieDataSource implements MovieDataSource  {
 
     @Override
     public void saveMovie(Movie movie) {
+        throw new UnsupportedOperationException();
+    }
 
+    @Override
+    public Observable<Movie> getMovie(int id) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Observable<List<Movie>> createPopularResponseObservable(final int page) {
+        return Observable.create(new ObservableOnSubscribe<List<Movie>>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<Movie>> emitter) throws Exception {
+                getPopularResponse(page+1, new LoadPopularResponseCallback() {
+                    @Override
+                    public void onLoadPopularResponse(PopularResponse popularResponse) {
+                        emitter.onNext(popularResponse.getResults());
+                        //emitter.onComplete();
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        emitter.onError(new Exception("Data unavailable"));
+                    }
+                });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
     }
 }

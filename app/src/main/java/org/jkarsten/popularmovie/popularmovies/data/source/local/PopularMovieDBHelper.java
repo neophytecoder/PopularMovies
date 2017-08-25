@@ -9,14 +9,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class PopularMovieDBHelper extends SQLiteOpenHelper {
-    public static final int VERSION = 1;
+    public static final int VERSION = 4;
     public static final String DB_NAME = "PopularMovie.db";
 
     public static final String CREATE_DB_QUERY = "CREATE TABLE " + PopularMovieContract.MovieEntry.TABLE_NAME + "(" +
             PopularMovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PopularMovieContract.MovieEntry.COLUMN_ID + " INTEGER UNIQUE NOT NULL, " +
             PopularMovieContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-            PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXTNOT NULL, " +
+            PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
             PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL," +
             PopularMovieContract.MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
             PopularMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " INTEGER NOT NULL, " +
@@ -24,7 +24,7 @@ public class PopularMovieDBHelper extends SQLiteOpenHelper {
             PopularMovieContract.MovieEntry.COLUMN_FAVORITE + " NUMERIC NOT NULL, " +
             PopularMovieContract.MovieEntry.COLUMN_MOVIE_TYPE + " INTEGER NOT NULL " +
             ")";
-    public static final String DELETE_DB_QUERY = "";
+    public static final String DELETE_DB_QUERY = "DROP TABLE IF EXISTS " + PopularMovieContract.MovieEntry.TABLE_NAME;
 
     public PopularMovieDBHelper(Context context) {
         super(context, DB_NAME, null, VERSION);

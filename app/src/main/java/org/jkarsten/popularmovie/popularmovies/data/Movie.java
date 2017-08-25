@@ -49,6 +49,8 @@ public class Movie implements Serializable {
     @SerializedName("backdrop_path")
     private String backdropPath;
 
+    private int movieType = -1;
+
     private String year;
     private String topAverage;
 
@@ -181,6 +183,14 @@ public class Movie implements Serializable {
 
     public void setColumnId(long columnId) {
         this.columnId = columnId;
+    }
+
+    public int getMovieType() {
+        return movieType;
+    }
+
+    public void setMovieType(int movieType) {
+        this.movieType = movieType;
     }
 
     @Override

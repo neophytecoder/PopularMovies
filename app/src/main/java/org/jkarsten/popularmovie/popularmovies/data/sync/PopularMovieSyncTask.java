@@ -32,6 +32,8 @@ public class PopularMovieSyncTask {
     public static boolean isEmpty(Context context, String action) {
         Cursor cursor = queryAllMovies(context, action);
         int count = cursor.getCount();
+        if (!cursor.isClosed())
+            cursor.close();
         return count == 0;
     }
 

@@ -23,7 +23,7 @@ public class PopularMovieContentProvider extends ContentProvider {
     public static final int MOVIE_TASKS_POPULAR = 102;
     public static final int MOVIE_TASKS_TOP_RATED = 103;
     public static final int MOVIE_TASKS_FAVORITE = 104;
-
+    public static final int MOVIE_TASKS_WITH_COLUMN_ID = 105;
 
 
     public static final UriMatcher sUriMatcher = buildMatcher();
@@ -34,6 +34,7 @@ public class PopularMovieContentProvider extends ContentProvider {
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE, MOVIE_TASKS);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_POPULAR, MOVIE_TASKS_POPULAR);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_TOP_RATED, MOVIE_TASKS_TOP_RATED);
+        uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_COLUMN_ID + "/#", MOVIE_TASKS_WITH_COLUMN_ID);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/#", MOVIE_TASKS_WITH_ID);
         uriMatcher.addURI(PopularMovieContract.AUTHORITY, PopularMovieContract.PATH_MOVIE + "/" + PopularMovieContract.PATH_FAVORITE, MOVIE_TASKS_FAVORITE);
 
@@ -49,7 +50,7 @@ public class PopularMovieContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         final SQLiteDatabase database = mDBHelper.getReadableDatabase();
-
+        Log.d(PopularMovieContentProvider.class.getSimpleName(), uri.toString());
         String offset = uri.getQueryParameter(PopularMovieContract.PAGE);
         if (offset == null) {
             offset =  "1";
@@ -67,6 +68,13 @@ public class PopularMovieContentProvider extends ContentProvider {
                 String movieId = uri.getLastPathSegment();
                 selection = PopularMovieContract.MovieEntry.COLUMN_ID + "=?";
                 selectionArgs = new String[]{movieId};
+                offset = null;
+                break;
+            case MOVIE_TASKS_WITH_COLUMN_ID:
+                String movieColumnId = uri.getLastPathSegment();
+                selection = PopularMovieContract.MovieEntry._ID + "=?";
+                selectionArgs = new String[]{movieColumnId};
+                offset = null;
                 break;
             case MOVIE_TASKS_POPULAR:
                 selection = PopularMovieContract.MovieEntry.COLUMN_MOVIE_TYPE + "=?";
@@ -115,7 +123,7 @@ public class PopularMovieContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException();
 
         }
-        database.close();
+        //database.close();
         return newUri;
     }
 
@@ -147,7 +155,7 @@ public class PopularMovieContentProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException();
         }
-        database.close();
+        //database.close();
         return 0;
     }
 

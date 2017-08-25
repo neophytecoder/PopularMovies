@@ -46,7 +46,7 @@ public class LoaderPopularResponseCallback implements LoaderManager.LoaderCallba
         myUri = myUri.buildUpon().appendQueryParameter(PopularMovieContract.PAGE,
                   offset + "").build();
         return new CursorLoader(mContext, myUri, null,
-                null, null, null);
+                null, null, PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE + " DESC"  );
     }
 
     @Override

@@ -188,6 +188,11 @@ public class MainFragment extends Fragment implements MovieListContract.View, Mo
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void showNoInternet() {
         noInternetTextView.setVisibility(View.VISIBLE);
     }

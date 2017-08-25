@@ -1,19 +1,32 @@
 package org.jkarsten.popularmovie.popularmovies.data.source.local;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
+import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieDBUtils;
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
+
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by juankarsten on 7/16/17.
@@ -107,16 +120,77 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
 
     }
 
+    private boolean movieExist(Movie movie) {
+        Uri uri = ContentUris.withAppendedId(PopularMovieContract.CONTENT_URI_MOVIES, movie.getId());
+        Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, null);
+        boolean exist = cursor.getCount() != 0;
+        if (exist) {
+            cursor.moveToFirst();
+            Log.d(LocalMovieDataSource.class.getSimpleName(), cursor.getInt(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_ID))+"");
+        }
+        if (!cursor.isClosed())
+            cursor.close();
+        return exist;
+    }
+
     @Override
     public void saveMovie(final Movie movie) {
+        if (movie.getPosterPath() == null)
+            return;
         AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 ContentValues values = PopularMovieDBUtils.moviesToContentValues(movie);
-                mContext.getContentResolver().update(PopularMovieContract.CONTENT_URI_MOVIES, values, null, null);
+                if (movieExist(movie))
+                    mContext.getContentResolver().update(PopularMovieContract.CONTENT_URI_MOVIES, values, null, null);
+                else
+                    mContext.getContentResolver().insert(PopularMovieContract.CONTENT_URI_MOVIES, values);
                 return null;
             }
         };
         asyncTask.execute();
+    }
+
+    @Override
+    public Observable<Movie> getMovie(final int id) {
+        return Observable.create(new ObservableOnSubscribe<Movie>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Movie> e) throws Exception {
+                Uri uri = ContentUris.withAppendedId(PopularMovieContract.CONTENT_URI_MOVIES, id);
+                Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, null);
+
+                if (cursor.getCount() != 0 && cursor.moveToFirst()) {
+                    Movie movie = PopularMovieDBUtils.cursorToMovie(cursor);
+                    e.onNext(movie);
+                } else {
+                    e.onError(new Exception("not exist movie"));
+                }
+
+                if (!cursor.isClosed()) {
+                    cursor.close();
+                }
+            }
+        }).subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<Movie>> createPopularResponseObservable(final int page) {
+        return Observable.create(new ObservableOnSubscribe<List<Movie>>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<Movie>> emitter) throws Exception {
+                getPopularResponse(page + 1, new LoadPopularResponseCallback() {
+                        @Override
+                        public void onLoadPopularResponse(PopularResponse popularResponse) {
+                            emitter.onNext(popularResponse.getResults());
+                            //emitter.onComplete();
+                        }
+
+                        @Override
+                        public void onDataNotAvailable() {
+                            emitter.onError(new Exception("Data unavailable"));
+                        }
+                    });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
     }
 }

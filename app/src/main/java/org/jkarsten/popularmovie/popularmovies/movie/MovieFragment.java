@@ -142,9 +142,16 @@ public class MovieFragment extends Fragment implements MovieContract.View,
         mMovieBinding.setMMovie(new MovieViewModel(mMovie));
 
         String path = ImageUtil.buildImageUri(movie.getPosterPath(), getContext());
-        Log.d(MovieFragment.class.getSimpleName(), mMovie + " " +path);
-        Picasso.with(getContext()).load(path).into(mMoviePosterImageView);
-        Picasso.with(getContext()).load(path).into(mHeaderImageView);
+        if (path != null) {
+            Log.d(MovieFragment.class.getSimpleName(), mMovie + " " +path);
+            Picasso.with(getContext()).load(path).into(mMoviePosterImageView);
+            Picasso.with(getContext()).load(path).into(mHeaderImageView);
+        } else {
+            Log.d(MovieFragment.class.getSimpleName(), mMovie + " " +path);
+            mMoviePosterImageView.setImageResource(R.drawable.scrim);
+            mHeaderImageView.setImageResource(R.drawable.scrim);
+        }
+
 
         CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) mRootView.findViewById(R.id.collapsing_toolbar_layout);
         toolbarLayout.setTitle(mMovie.getTitle());

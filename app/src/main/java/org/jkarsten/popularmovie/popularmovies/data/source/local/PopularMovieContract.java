@@ -13,6 +13,7 @@ import java.util.Date;
 public class PopularMovieContract {
     public static final String AUTHORITY = "org.jkarsten.popularmovie.popularmovies.data.source.local";
     public static final String PATH_MOVIE = "movies";
+    public static final String PATH_COLUMN_ID = "columnId";
     public static final String PATH_POPULAR = "popular";
     public static final String PATH_TOP_RATED = "topRated";
     public static final String PATH_FAVORITE = "favorite";
@@ -21,6 +22,10 @@ public class PopularMovieContract {
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final Uri CONTENT_URI_MOVIES = CONTENT_URI.buildUpon()
             .appendPath(PATH_MOVIE)
+            .build();
+    public static final Uri CONTENT_URI_MOVIES_COLUMN_ID = CONTENT_URI.buildUpon()
+            .appendPath(PATH_MOVIE)
+            .appendPath(PATH_COLUMN_ID)
             .build();
     public static final Uri CONTENT_URI_MOVIES_POPULAR = CONTENT_URI.buildUpon()
             .appendPath(PATH_MOVIE)

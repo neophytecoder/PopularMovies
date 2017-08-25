@@ -1,5 +1,7 @@
 package org.jkarsten.popularmovie.popularmovies.movie;
 
+import android.util.Log;
+
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.Review;
 import org.jkarsten.popularmovie.popularmovies.data.Trailer;
@@ -9,7 +11,9 @@ import org.jkarsten.popularmovie.popularmovies.data.source.TrailerSource;
 
 import java.util.List;
 
-import javax.inject.Inject;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+
 
 /**
  * Created by juankarsten on 6/29/17.
@@ -37,18 +41,43 @@ public class MoviePresenter implements MovieContract.Presenter, ReviewSource.Loa
     public void start() {
         mDualPane = mView.isDualPane();
 
+        if (mDualPane) {
+
+        }
+
         Movie movie = mView.getMovie();
         if (movie == null && mDualPane) {
             movie = mMovie;
         }
 
         if (movie != null) {
-            mView.showMovie(movie);
-            mReviewRepository.getReview(movie.getId(), 1, this);
-            mTrailerRepository.getTrailers(movie.getId(), 1, this);
-
+            showMovieToUI(movie);
             mMovie = movie;
+            subscribeToMovie();
         }
+    }
+
+    private void subscribeToMovie() {
+        mRepository.getMovie(mMovie.getId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Movie>() {
+                    @Override
+                    public void accept(Movie movie) throws Exception {
+                        if (movie.getId() == mMovie.getId()) {
+                            mMovie = movie;
+
+                            mView.showMovie(movie);
+                            mReviewRepository.getReview(movie.getId(), 1, MoviePresenter.this);
+                            mTrailerRepository.getTrailers(movie.getId(), 1, MoviePresenter.this);
+                        }
+                    }
+                });
+    }
+
+    private void showMovieToUI(Movie movie) {
+        mView.showMovie(movie);
+        mReviewRepository.getReview(movie.getId(), 1, this);
+        mTrailerRepository.getTrailers(movie.getId(), 1, this);
     }
 
     @Override

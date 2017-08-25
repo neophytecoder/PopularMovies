@@ -29,6 +29,9 @@ public class ImageUtil {
     public static final int XXXHDPI = 40;
 
     public static String buildImageUri(String size, String imagePath) {
+        if (imagePath == null) {
+            return null;
+        }
         String url = Uri.parse(IMAGE_URL)
                 .buildUpon()
                 .appendPath(size)

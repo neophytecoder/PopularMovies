@@ -74,9 +74,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
         public void bind(Movie movie) {
             String path = ImageUtil.buildImageUri(movie.getPosterPath(), mContext);
-            Picasso.with(mContext)
-                    .load(path)
-                    .into(mPosterImageView);
+            if (path != null) {
+                Picasso.with(mContext)
+                        .load(path)
+                        .into(mPosterImageView);
+            } else {
+                mPosterImageView.setImageResource(R.drawable.scrim);
+            }
+
         }
 
         @Override

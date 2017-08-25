@@ -79,4 +79,6 @@ public class RemoteReviewSource implements ReviewSource, LoaderManager.LoaderCal
     public void onLoaderReset(Loader<ReviewResponse> loader) {
 
     }
+
+
 }

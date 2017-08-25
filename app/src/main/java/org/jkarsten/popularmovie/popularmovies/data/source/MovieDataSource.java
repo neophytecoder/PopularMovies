@@ -7,6 +7,8 @@ import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+
 /**
  * Created by juankarsten on 6/24/17.
  */
@@ -18,8 +20,11 @@ public interface MovieDataSource {
     void getPopularResponse(int page, LoadPopularResponseCallback callback);
     void getTopRatedResponse(int page, LoadTopRatedResponseCallback callback);
     void saveMovie(Movie movie);
+    Observable<Movie> getMovie(int id);
     int getTotalPages();
     int getTotalResults();
+
+    Observable<List<Movie>> createPopularResponseObservable(int page);
 
     public static final int SORT_BY_POPULAR = 1;
     public static final int SORT_BY_TOP_RATED = 2;

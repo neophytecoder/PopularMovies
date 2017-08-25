@@ -38,14 +38,17 @@ public class PopularMovieDBUtils {
 
         if (movie.getColumnId() != -1)
             values.put(PopularMovieContract.MovieEntry._ID, movie.getColumnId());
-        values.put(PopularMovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview());
-        values.put(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath());
-        values.put(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime() / 1000);
-        values.put(PopularMovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
+        values.put(PopularMovieContract.MovieEntry.COLUMN_OVERVIEW, movie.getOverview().trim());
+        values.put(PopularMovieContract.MovieEntry.COLUMN_POSTER_PATH, movie.getPosterPath().trim());
+        values.put(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE, movie.getReleaseDate().getTime() / 1000L);
+        values.put(PopularMovieContract.MovieEntry.COLUMN_TITLE, movie.getTitle().trim());
         values.put(PopularMovieContract.MovieEntry.COLUMN_VIDEO, true);
         values.put(PopularMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
         values.put(PopularMovieContract.MovieEntry.COLUMN_ID, movie.getId());
         values.put(PopularMovieContract.MovieEntry.COLUMN_FAVORITE, movie.getMarkAsFavorite());
+        if (movie.getMovieType() != -1) {
+            values.put(PopularMovieContract.MovieEntry.COLUMN_MOVIE_TYPE, movie.getMovieType());
+        }
         return values;
     }
 
@@ -57,8 +60,8 @@ public class PopularMovieDBUtils {
         movie.setVoteAverage(cursor.getDouble(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
         movie.setId(cursor.getInt(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_ID)));
 
-        int dateInUnixTimeStamp = cursor.getInt(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE));
-        movie.setReleaseDate(new Date(dateInUnixTimeStamp * 1000));
+        long dateInUnixTimeStamp = cursor.getLong(cursor.getColumnIndex(PopularMovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+        movie.setReleaseDate(new Date(dateInUnixTimeStamp * 1000L));
 
         movie.setColumnId(cursor.getLong(cursor.getColumnIndex(PopularMovieContract.MovieEntry._ID)));
 
