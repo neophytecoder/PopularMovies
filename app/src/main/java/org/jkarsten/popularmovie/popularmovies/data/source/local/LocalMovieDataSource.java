@@ -15,6 +15,7 @@ import android.util.Log;
 
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
+import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 import org.jkarsten.popularmovie.popularmovies.data.utils.PopularMovieDBUtils;
 import org.jkarsten.popularmovie.popularmovies.movielist.MovieListPresenter;
@@ -178,11 +179,10 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
         return Observable.create(new ObservableOnSubscribe<List<Movie>>() {
             @Override
             public void subscribe(@NonNull final ObservableEmitter<List<Movie>> emitter) throws Exception {
-                getPopularResponse(page + 1, new LoadPopularResponseCallback() {
+                getPopularResponse(page, new LoadPopularResponseCallback() {
                         @Override
                         public void onLoadPopularResponse(PopularResponse popularResponse) {
                             emitter.onNext(popularResponse.getResults());
-                            //emitter.onComplete();
                         }
 
                         @Override
@@ -190,6 +190,27 @@ public class LocalMovieDataSource implements MovieDataSource, LoaderManager.Load
                             emitter.onError(new Exception("Data unavailable"));
                         }
                     });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<List<Movie>> createTopRatedResponseObservable(final int page) {
+        return Observable.create(new ObservableOnSubscribe<List<Movie>>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<Movie>> emitter) throws Exception {
+                getTopRatedResponse(page, new LoadTopRatedResponseCallback() {
+                    @Override
+                    public void onLoadTopRatedResponse(TopRatedResponse popularResponse) {
+                        emitter.onNext(popularResponse.getResults());
+                    }
+
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        emitter.onError(new Exception("Data unavailable"));
+                    }
+                });
             }
         }).subscribeOn(AndroidSchedulers.mainThread());
     }

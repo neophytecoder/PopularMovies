@@ -155,4 +155,25 @@ public class RemoteMovieDataSource implements MovieDataSource  {
             }
         }).subscribeOn(AndroidSchedulers.mainThread());
     }
+
+    @Override
+    public Observable<List<Movie>> createTopRatedResponseObservable(final int page) {
+        return Observable.create(new ObservableOnSubscribe<List<Movie>>() {
+            @Override
+            public void subscribe(@NonNull final ObservableEmitter<List<Movie>> emitter) throws Exception {
+                getTopRatedResponse(page+1, new LoadTopRatedResponseCallback() {
+
+                    @Override
+                    public void onLoadTopRatedResponse(TopRatedResponse popularResponse) {
+                        emitter.onNext(popularResponse.getResults());
+                    }
+
+                    @Override
+                    public void onDataNotAvailable() {
+                        emitter.onError(new Exception("Data unavailable"));
+                    }
+                });
+            }
+        }).subscribeOn(AndroidSchedulers.mainThread());
+    }
 }

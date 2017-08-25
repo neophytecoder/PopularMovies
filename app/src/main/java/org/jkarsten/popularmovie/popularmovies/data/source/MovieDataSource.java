@@ -25,6 +25,7 @@ public interface MovieDataSource {
     int getTotalResults();
 
     Observable<List<Movie>> createPopularResponseObservable(int page);
+    Observable<List<Movie>> createTopRatedResponseObservable(int page);
 
     public static final int SORT_BY_POPULAR = 1;
     public static final int SORT_BY_TOP_RATED = 2;

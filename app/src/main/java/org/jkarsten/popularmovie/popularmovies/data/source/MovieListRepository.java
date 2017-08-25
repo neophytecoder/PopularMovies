@@ -31,7 +31,6 @@ public class MovieListRepository implements MovieDataSource,
     public MovieListRepository(MovieDataSource remoteDataSource, MovieDataSource localDataSource) {
         mRemoteDataSource = remoteDataSource;
         mLocalDataSource = localDataSource;
-        // TODO: 6/29/17 deal with page number
     }
 
     @Override
@@ -148,6 +147,33 @@ public class MovieListRepository implements MovieDataSource,
 
         Observable<List<Movie>>  localObservable = mLocalDataSource
                 .createPopularResponseObservable(page);
+
+        return Observable.mergeDelayError(localObservable, remoteObservable)
+                .filter(new Predicate<List<Movie>>() {
+                    @Override
+                    public boolean test(@NonNull List<Movie> movies) throws Exception {
+                        return movies != null;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<Movie>> createTopRatedResponseObservable(int page) {
+        Observable<List<Movie>>  remoteObservable = mRemoteDataSource
+                .createTopRatedResponseObservable(page)
+                .doOnNext(new Consumer<List<Movie>>() {
+                    @Override
+                    public void accept(List<Movie> movies) throws Exception {
+                        for (Movie movie: movies) {
+                            movie.setMovieType(PopularMovieContract.MovieEntry.MOVIE_TYPE_TOP_RATED);
+                            saveMovie(movie);
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.io());
+
+        Observable<List<Movie>>  localObservable = mLocalDataSource
+                .createTopRatedResponseObservable(page);
 
         return Observable.mergeDelayError(localObservable, remoteObservable)
                 .filter(new Predicate<List<Movie>>() {

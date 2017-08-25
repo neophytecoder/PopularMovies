@@ -5,7 +5,6 @@ import android.util.Log;
 import org.jkarsten.popularmovie.popularmovies.OnMovieSelected;
 import org.jkarsten.popularmovie.popularmovies.data.Movie;
 import org.jkarsten.popularmovie.popularmovies.data.MovieSortType;
-import org.jkarsten.popularmovie.popularmovies.data.PopularResponse;
 import org.jkarsten.popularmovie.popularmovies.data.TopRatedResponse;
 import org.jkarsten.popularmovie.popularmovies.data.source.MovieDataSource;
 
@@ -14,9 +13,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
@@ -60,31 +56,55 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
 
         currentSort = mView.readSortingState();
         if (currentSort == MovieSortType.SORT_BY_POPULAR) {
-            Disposable disposable = mRepository.createPopularResponseObservable(0)
-                    .subscribe(new Consumer<List<Movie>>() {
-                        @Override
-                        public void accept(List<Movie> movies) throws Exception {
-                            onLoadedMovies(movies, MovieSortType.SORT_BY_POPULAR);
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            Log.d(MovieListPresenter.class.getSimpleName(), "onError" + throwable.getMessage());
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            Log.d(MovieListPresenter.class.getSimpleName(), "onComplete");
-                        }
-                    });
-            mCompositeDisposable.add(disposable);
-        }
-
-        else if (currentSort == MovieSortType.SORT_BY_TOP_RATED)
-            mRepository.getTopRatedMovies(this);
-        else
+            subscribeToPopularMoviesSource(0);
+        } else if (currentSort == MovieSortType.SORT_BY_TOP_RATED) {
+            subscribeToTopRatedMoviesSource(0);
+        } else {
             mRepository.getFavoriteMovies(this);
+        }
         Log.d(MovieListPresenter.class.getSimpleName(), "started");
+    }
+
+    public void subscribeToPopularMoviesSource(int page) {
+        Disposable disposable = mRepository.createPopularResponseObservable(page)
+                .subscribe(new Consumer<List<Movie>>() {
+                    @Override
+                    public void accept(List<Movie> movies) throws Exception {
+                        onLoadedMovies(movies, MovieSortType.SORT_BY_POPULAR);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d(MovieListPresenter.class.getSimpleName(), "onError" + throwable.getMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Log.d(MovieListPresenter.class.getSimpleName(), "onComplete");
+                    }
+                });
+        mCompositeDisposable.add(disposable);
+    }
+
+    public void subscribeToTopRatedMoviesSource(int page) {
+        Disposable disposable = mRepository.createTopRatedResponseObservable(page)
+                .subscribe(new Consumer<List<Movie>>() {
+                    @Override
+                    public void accept(List<Movie> movies) throws Exception {
+                        onLoadedMovies(movies, MovieSortType.SORT_BY_TOP_RATED);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d(MovieListPresenter.class.getSimpleName(), "onError" + throwable.getMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Log.d(MovieListPresenter.class.getSimpleName(), "onComplete");
+                    }
+                });
+        mCompositeDisposable.add(disposable);
     }
 
     @Override
@@ -174,46 +194,11 @@ public class MovieListPresenter implements MovieListContract.Presenter, MovieDat
     @Override
     public void onLoadMore(final int page, int totalItemsCount, final int expectedItemCount) {
         if (currentSort == MovieSortType.SORT_BY_POPULAR) {
-            Disposable disposable = mRepository.createPopularResponseObservable(page)
-                    .subscribe(new Consumer<List<Movie>>() {
-                        @Override
-                        public void accept(List<Movie> movies) throws Exception {
-                            onLoadedMovies(movies, MovieSortType.SORT_BY_POPULAR);
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            Log.d(MovieListPresenter.class.getSimpleName(), "onError" + throwable.getMessage());
-                        }
-                    }, new Action() {
-                        @Override
-                        public void run() throws Exception {
-                            Log.d(MovieListPresenter.class.getSimpleName(), "onComplete");
-                        }
-                    });
-            mCompositeDisposable.add(disposable);
-        }
-        else if (currentSort == MovieSortType.SORT_BY_TOP_RATED)
-            mRepository.getTopRatedResponse(page + 1, new MovieDataSource.LoadTopRatedResponseCallback() {
-                @Override
-                public void onLoadTopRatedResponse(TopRatedResponse topRatedResponse) {
-                    Log.d(MovieListPresenter.class.getSimpleName(), topRatedResponse.toString());
-                    if (topRatedResponse.getResults() != null) {
-                        for (Movie movie : topRatedResponse.getResults()) {
-                            if (!mMovies.contains(movie)) {
-                                mMovies.add(movie);
-                            }
-                        }
-                        mView.showMovies(mMovies);
-                    }
-                }
-
-                @Override
-                public void onDataNotAvailable() {
-
-                }
-            });
-        else
+            subscribeToPopularMoviesSource(page+1);
+        } else if (currentSort == MovieSortType.SORT_BY_TOP_RATED) {
+            subscribeToTopRatedMoviesSource(page+1);
+        } else {
             mRepository.getFavoriteMovies(this);
+        }
     }
 }
