@@ -43,18 +43,7 @@ public class ImageUtil {
     }
 
     public static String buildImageUri(String imagePath, Context context) {
-        int density = getDensity(context);
-
-        if (density < HDPI)
-            return buildImageUri(MDPI_SIZE, imagePath);
-        else if (density < XHDPI)
-            return buildImageUri(HDPI_SIZE, imagePath);
-        else if (density < XXHDPI)
-            return buildImageUri(XHDPI_SIZE, imagePath);
-        else if (density < XXXHDPI)
-            return buildImageUri(XXHDPI_SIZE, imagePath);
-        else
-            return buildImageUri(XXXHDPI_SIZE, imagePath);
+        return buildImageUri(XHDPI_SIZE, imagePath);
     }
 
     public static int getColumns(Context context) {
