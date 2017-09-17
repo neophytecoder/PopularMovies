@@ -1,12 +1,9 @@
 # Popular Movie App
 Popular movie is the second project of Android nano degree from Udacity. The purpose of the project is to build an android application to show popular, top rated, and favorite movies by consuming the movie database REST api. In addition, the app is optimized for tablet with dual pane layout. The app displays a list of movies in a unlimited scrolling grid layout using RecyclerView, launches a detail screen whenever the users click a movie, allows the users to mark particular movies as favorite, view trailers with implicit intent, and caches movies into sqlite with content provider.
 
-<img width="32%" src="README/front.png" />
-<img width="32%" src="README/detail.png" />
-<img width="32%" src="README/detail2.png" />
+<img width="30%" src="README/front.png" /> <img width="30%" src="README/detail.png" /> <img width="30%" src="README/detail2.png" />
 
-<img width="48%" src="README/land2.png" />
-<img width="48%" src="README/land1.png" />
+<img width="45%" src="README/land2.png" /> <img width="45%" src="README/land1.png" />
 
 <img src="README/tablet.png" />
 
